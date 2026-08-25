@@ -1,0 +1,25 @@
+{
+  "name": "Magazijn Ziekenwagen",
+  "short_name": "Magazijn",
+  "description": "Voorraadbeheer voor de ziekenwagen met QR-scan en minimumvoorraad-meldingen",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F8FA",
+  "theme_color": "#16213E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
