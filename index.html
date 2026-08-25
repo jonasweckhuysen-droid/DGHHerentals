@@ -11,6 +11,7 @@
 <meta name="theme-color" content="#16213E">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Magazijn">
@@ -26,491 +27,500 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
 <style>
-  :root {
-    --ink: #16213E;
-    --paper: #F7F8FA;
-    --card: #FFFFFF;
-    --line: #E1E4EA;
-    --danger: #D7263D;
-    --danger-bg: #FDEBEE;
-    --ok: #2E8B57;
-    --ok-bg: #EAF6EF;
-    --muted: #6B7280;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-      Roboto, Helvetica, Arial, sans-serif;
-    background: var(--paper);
-    color: var(--ink);
-    min-height: 100vh;
-  }
-
-  header {
-    background: var(--ink);
-    color: white;
-    padding: 18px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  header h1 {
-    font-size: 1.15rem;
-    margin: 0;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-  }
-
-  nav {
-    display: flex;
-    background: var(--card);
-    border-bottom: 1px solid var(--line);
-    position: sticky;
-    top: 0;
-    z-index: 5;
-  }
-
-  nav button {
-    flex: 1;
-    padding: 14px 8px;
-    border: none;
-    background: none;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-  }
-
-  nav button.active {
-    color: var(--ink);
-    border-bottom-color: var(--danger);
-  }
-
-  main {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 20px 16px 80px;
-  }
-
-  .view {
-    display: none;
-  }
-
-  .view.active {
-    display: block;
-  }
-
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 16px;
-  }
-
-  button.primary {
-    width: 100%;
-    padding: 16px;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: white;
-    background: var(--ink);
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-
-  button.primary:active {
-    opacity: 0.85;
-  }
-
-  button.danger {
-    background: var(--danger);
-  }
-
-  button.success {
-    background: var(--ok);
-  }
-
-  button.secondary {
-    width: 100%;
-    padding: 14px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--ink);
-    background: transparent;
-    border: 2px solid var(--line);
-    border-radius: 10px;
-    cursor: pointer;
-  }
-
-  #qr-reader {
-    width: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 14px;
-  }
-
-  input[type="text"],
-  input[type="number"] {
-    width: 100%;
-    padding: 13px;
-    font-size: 1rem;
-    border: 2px solid var(--line);
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-
-  label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-
-  .scan-result h2 {
-    margin: 0 0 4px;
-    font-size: 1.3rem;
-  }
-
-  .scan-result .stock-line {
-    font-size: 0.95rem;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
-
-  .scan-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .scan-actions button {
-    flex: 1;
-  }
-
-  .toast {
-    position: fixed;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    padding: 14px 18px;
-    border-radius: 10px;
-    font-weight: 600;
-    text-align: center;
-    color: white;
-    background: var(--ink);
-    display: none;
-    z-index: 100;
-  }
-
-  .toast.show {
-    display: block;
-  }
-
-  .toast.ok {
-    background: var(--ok);
-  }
-
-  .toast.error {
-    background: var(--danger);
-  }
-
-  .item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-
-  .item-row.low {
-    border-color: var(--danger);
-    background: var(--danger-bg);
-  }
-
-  .item-row .name {
-    font-weight: 700;
-  }
-
-  .item-row .sub {
-    font-size: 0.82rem;
-    color: var(--muted);
-  }
-
-  .item-row .qty {
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-align: right;
-  }
-
-  .item-row.low .qty {
-    color: var(--danger);
-  }
-
-  .badge {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 999px;
-    background: var(--danger);
-    color: white;
-    margin-left: 6px;
-    vertical-align: middle;
-  }
-
-  .empty {
-    text-align: center;
-    color: var(--muted);
-    padding: 40px 20px;
-    font-size: 0.95rem;
-  }
-
-  /* VARIA */
-
-  .varia-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    background: var(--card);
-  }
-
-  .varia-text {
-    font-weight: 600;
-    flex: 1;
-  }
-
-  .delete-varia {
-    border: none;
-    background: var(--danger);
-    color: white;
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  /* MODALS */
-
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(22,33,62,0.5);
-    display: none;
-    align-items: flex-end;
-    z-index: 30;
-  }
-
-  .modal-backdrop.show {
-    display: flex;
-  }
-
-  .modal {
-    background: var(--card);
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    padding: 22px 18px 26px;
-    max-height: 88vh;
-    overflow-y: auto;
-  }
-
-  .modal h3 {
-    margin-top: 0;
-  }
-
-  .modal-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 14px;
-  }
-
-  .modal-actions button {
-    flex: 1;
-  }
-
-  #qr-print {
-    text-align: center;
-    margin-top: 10px;
-  }
-
-  #qr-print canvas {
-    margin: 0 auto;
-  }
-
-  .row-2 {
-    display: flex;
-    gap: 10px;
-  }
-
-  .row-2 > div {
-    flex: 1;
-  }
-
-  /* VOORRAAD ACTIE MODAL */
-
-  .stock-modal-header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .stock-modal-header h3 {
-    font-size: 1.35rem;
-    margin-bottom: 6px;
-  }
 
-  .stock-modal-stock {
-    font-size: 1rem;
-    color: var(--muted);
-  }
-
-  .stock-modal-stock strong {
-    color: var(--ink);
-    font-size: 1.25rem;
-  }
-
-  .stock-action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .stock-action-buttons button {
-    flex: 1;
-  }
-
-  .stock-edit-button {
-    margin-top: 10px;
-  }
-
-  /* INSTALLATIE POPUP */
-
-  .install-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(22,33,62,0.65);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 90;
-    backdrop-filter: blur(4px);
-  }
-
-  .install-backdrop.show {
-    display: flex;
-  }
-
-  .install-popup {
-    width: 100%;
-    max-width: 430px;
-    background: white;
-    border-radius: 22px;
-    padding: 28px 22px 22px;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    animation: installPopupIn 0.3s ease-out;
-  }
-
-  @keyframes installPopupIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px) scale(0.96);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
+:root {
+  --ink: #16213E;
+  --paper: #F7F8FA;
+  --card: #FFFFFF;
+  --line: #E1E4EA;
+  --danger: #D7263D;
+  --danger-bg: #FDEBEE;
+  --ok: #2E8B57;
+  --ok-bg: #EAF6EF;
+  --muted: #6B7280;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+header {
+  background: var(--ink);
+  color: white;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header h1 {
+  font-size: 1.15rem;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+nav {
+  display: flex;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+nav button {
+  flex: 1;
+  padding: 14px 8px;
+  border: none;
+  background: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+}
+
+nav button.active {
+  color: var(--ink);
+  border-bottom-color: var(--danger);
+}
+
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+button.primary {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
+  background: var(--ink);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button.primary:active {
+  opacity: 0.85;
+}
+
+button.danger {
+  background: var(--danger);
+}
+
+button.success {
+  background: var(--ok);
+}
+
+button.secondary {
+  width: 100%;
+  padding: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#qr-reader {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 13px;
+  font-size: 1rem;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-family: inherit;
+}
+
+textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.scan-result h2 {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+}
+
+.scan-result .stock-line {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.stock-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.stock-actions button {
+  flex: 1;
+}
+
+.toast {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+  color: white;
+  background: var(--ink);
+  display: none;
+  z-index: 100;
+}
+
+.toast.show {
+  display: block;
+}
+
+.toast.ok {
+  background: var(--ok);
+}
+
+.toast.error {
+  background: var(--danger);
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.item-row.low {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.item-row .name {
+  font-weight: 700;
+}
+
+.item-row .sub {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.item-row .qty {
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.item-row.low .qty {
+  color: var(--danger);
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: white;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px 20px;
+  font-size: 0.95rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(22,33,62,0.5);
+  display: none;
+  align-items: flex-end;
+  z-index: 30;
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal {
+  background: var(--card);
+  width: 100%;
+  border-radius: 16px 16px 0 0;
+  padding: 22px 18px 26px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  margin-top: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.modal-actions button {
+  flex: 1;
+}
+
+#qr-print {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#qr-print canvas {
+  margin: 0 auto;
+}
+
+.row-2 {
+  display: flex;
+  gap: 10px;
+}
+
+.row-2 > div {
+  flex: 1;
+}
+
+
+/* =========================================================
+   VARIA
+   ========================================================= */
+
+.varia-item {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.varia-item-text {
+  font-size: 1rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.varia-item-date {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.varia-delete {
+  margin-top: 12px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--danger);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   INSTALLATIE POPUP
+   ========================================================= */
+
+.install-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(22,33,62,0.60);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 200;
+}
+
+.install-backdrop.show {
+  display: flex;
+}
+
+.install-modal {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 22px;
+  padding: 26px 22px 22px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  animation: installPopupIn 0.25s ease-out;
+}
+
+@keyframes installPopupIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.install-icon {
+  width: 74px;
+  height: 74px;
+  border-radius: 18px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: white;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.install-modal h2 {
+  margin: 0 0 10px;
+  font-size: 1.35rem;
+}
+
+.install-modal p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+
+.install-button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: var(--ink);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.install-close {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ios-steps {
+  text-align: left;
+  background: var(--paper);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 18px;
+}
+
+.ios-steps div {
+  margin-bottom: 9px;
+  font-size: 0.92rem;
+}
+
+.ios-steps div:last-child {
+  margin-bottom: 0;
+}
+
+.install-share {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+
+/* =========================================================
+   UPDATE MELDING
+   ========================================================= */
+
+.update-message {
+  position: fixed;
+  top: 15px;
+  left: 16px;
+  right: 16px;
+  background: var(--ink);
+  color: white;
+  padding: 14px 18px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 600;
+  display: none;
+  z-index: 250;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+.update-message.show {
+  display: block;
+}
 
-  .install-icon {
-    width: 76px;
-    height: 76px;
-    margin: 0 auto 16px;
-    border-radius: 18px;
-    background: var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 2.2rem;
-    font-weight: 800;
-    box-shadow: 0 8px 20px rgba(22,33,62,0.25);
-  }
-
-  .install-popup h2 {
-    margin: 0 0 8px;
-    font-size: 1.4rem;
-  }
-
-  .install-popup p {
-    color: var(--muted);
-    line-height: 1.5;
-    margin: 0 0 18px;
-  }
-
-  .install-info {
-    background: var(--paper);
-    border-radius: 12px;
-    padding: 14px;
-    text-align: left;
-    margin-bottom: 18px;
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .install-info strong {
-    color: var(--ink);
-  }
-
-  .install-close {
-    margin-top: 10px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    font-weight: 600;
-    padding: 10px;
-    cursor: pointer;
-  }
-
-  .ios-share {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 4px;
-    font-size: 1.15rem;
-  }
-
-  @media (max-width: 420px) {
-
-    .scan-actions {
-      flex-direction: column;
-    }
-
-    .stock-action-buttons {
-      flex-direction: column;
-    }
-
-  }
 </style>
 </head>
 
@@ -520,19 +530,29 @@
   <h1>Magazijn Ziekenwagen</h1>
 </header>
 
+
 <nav>
-  <button class="tab-btn active" data-view="scan">
+
+  <button
+    class="tab-btn active"
+    data-view="scan">
     Scannen
   </button>
 
-  <button class="tab-btn" data-view="overview">
+  <button
+    class="tab-btn"
+    data-view="overview">
     Voorraad
   </button>
 
-  <button class="tab-btn" data-view="varia">
+  <button
+    class="tab-btn"
+    data-view="varia">
     Varia
   </button>
+
 </nav>
+
 
 <main>
 
@@ -546,24 +566,26 @@
 
       <div id="qr-reader"></div>
 
-      <button class="primary" id="btn-start-scan">
+      <button
+        class="primary"
+        id="btn-start-scan">
         Start scannen
       </button>
 
     </div>
 
+
     <div
       class="card scan-result"
       id="scan-result-card"
-      style="display:none;"
-    >
+      style="display:none;">
 
       <h2 id="scan-item-name"></h2>
 
       <div
         class="stock-line"
-        id="scan-item-stock"
-      ></div>
+        id="scan-item-stock">
+      </div>
 
       <label for="scan-amount">
         Aantal
@@ -574,23 +596,21 @@
         id="scan-amount"
         min="1"
         value="1"
-        inputmode="numeric"
-      >
+        inputmode="numeric">
 
-      <div class="scan-actions">
+
+      <div class="stock-actions">
 
         <button
           class="primary danger"
-          id="btn-deduct"
-        >
+          id="btn-deduct">
           Afboeken
         </button>
 
         <button
           class="primary success"
-          id="btn-add-stock"
-        >
-          + Levering
+          id="btn-add-stock">
+          Bijboeken
         </button>
 
       </div>
@@ -609,8 +629,7 @@
     <button
       class="primary"
       id="btn-add-item"
-      style="margin-bottom:16px;"
-    >
+      style="margin-bottom:16px;">
       + Nieuw artikel
     </button>
 
@@ -627,40 +646,32 @@
 
     <div class="card">
 
-      <h2 style="margin-top:0;">
-        Varia
-      </h2>
+      <h3 style="margin-top:0;">
+        Artikel toevoegen aan Varia
+      </h3>
 
-      <p
-        style="
-          color:var(--muted);
-          font-size:0.9rem;
-          line-height:1.5;
-        "
-      >
-        Artikel of materiaal nodig dat niet in de
-        voorraadlijst staat? Voeg het hier toe.
+      <p style="color:var(--muted); font-size:0.9rem; line-height:1.5;">
+        Staat een artikel niet in de voorraadlijst,
+        maar moet het wel besteld worden?
+        Noteer het hier.
       </p>
 
-      <label for="varia-input">
-        Artikel / materiaal
+      <label for="varia-text">
+        Artikel / bestelling
       </label>
 
-      <input
-        type="text"
-        id="varia-input"
-        placeholder="Bv. nieuwe brancardhoes"
-        autocomplete="off"
-      >
+      <textarea
+        id="varia-text"
+        placeholder="Bv. 2 dozen steriele handschoenen maat L&#10;Bv. Speciale verbandsets voor ambulance 3"></textarea>
 
       <button
         class="primary"
-        id="btn-add-varia"
-      >
-        + Toevoegen aan bestellijst
+        id="btn-save-varia">
+        Varia toevoegen
       </button>
 
     </div>
+
 
     <div id="varia-list"></div>
 
@@ -669,27 +680,30 @@
 </main>
 
 
-<!-- =====================================================
+<!-- =======================================================
      TOAST
-     ===================================================== -->
+     ======================================================= -->
 
-<div class="toast" id="toast"></div>
+<div
+  class="toast"
+  id="toast">
+</div>
 
 
-<!-- =====================================================
-     MODAL: ARTIKEL TOEVOEGEN / BEWERKEN
-     ===================================================== -->
+<!-- =======================================================
+     MODAL: ITEM TOEVOEGEN / BEWERKEN
+     ======================================================= -->
 
 <div
   class="modal-backdrop"
-  id="item-modal"
->
+  id="item-modal">
 
   <div class="modal">
 
     <h3 id="modal-title">
       Artikel
     </h3>
+
 
     <label for="f-name">
       Naam
@@ -698,8 +712,8 @@
     <input
       type="text"
       id="f-name"
-      placeholder="Bv. Infuusset 500ml"
-    >
+      placeholder="Bv. Infuusset 500ml">
+
 
     <label for="f-qr">
       QR-code (unieke waarde)
@@ -708,8 +722,8 @@
     <input
       type="text"
       id="f-qr"
-      placeholder="Bv. INF-500-01"
-    >
+      placeholder="Bv. INF-500-01">
+
 
     <div class="row-2">
 
@@ -724,10 +738,10 @@
           id="f-stock"
           min="0"
           value="0"
-          inputmode="numeric"
-        >
+          inputmode="numeric">
 
       </div>
+
 
       <div>
 
@@ -740,28 +754,27 @@
           id="f-min"
           min="0"
           value="0"
-          inputmode="numeric"
-        >
+          inputmode="numeric">
 
       </div>
 
     </div>
 
+
     <div id="qr-print"></div>
+
 
     <div class="modal-actions">
 
       <button
         class="secondary"
-        id="btn-cancel-item"
-      >
+        id="btn-cancel-item">
         Annuleren
       </button>
 
       <button
         class="primary"
-        id="btn-save-item"
-      >
+        id="btn-save-item">
         Bewaren
       </button>
 
@@ -772,96 +785,15 @@
 </div>
 
 
-<!-- =====================================================
-     MODAL: VOORRAAD ACTIES
-     ===================================================== -->
-
-<div
-  class="modal-backdrop"
-  id="stock-action-modal"
->
-
-  <div class="modal">
-
-    <div class="stock-modal-header">
-
-      <h3 id="stock-action-name">
-        Artikel
-      </h3>
-
-      <div class="stock-modal-stock">
-        Huidige voorraad:
-        <strong id="stock-action-current">
-          0
-        </strong>
-      </div>
-
-    </div>
-
-
-    <label for="stock-action-amount">
-      Aantal
-    </label>
-
-    <input
-      type="number"
-      id="stock-action-amount"
-      min="1"
-      value="1"
-      inputmode="numeric"
-    >
-
-
-    <div class="stock-action-buttons">
-
-      <button
-        class="primary danger"
-        id="btn-stock-deduct"
-      >
-        Afboeken
-      </button>
-
-      <button
-        class="primary success"
-        id="btn-stock-add"
-      >
-        + Levering
-      </button>
-
-    </div>
-
-
-    <button
-      class="secondary stock-edit-button"
-      id="btn-stock-edit"
-    >
-      Artikel bewerken
-    </button>
-
-
-    <button
-      class="secondary"
-      id="btn-stock-cancel"
-      style="margin-top:10px;"
-    >
-      Annuleren
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- =====================================================
+<!-- =======================================================
      INSTALLATIE POPUP
-     ===================================================== -->
+     ======================================================= -->
 
 <div
   class="install-backdrop"
-  id="install-modal"
->
+  id="install-backdrop">
 
-  <div class="install-popup">
+  <div class="install-modal">
 
     <div class="install-icon">
       M
@@ -871,35 +803,72 @@
       Installeer Magazijn
     </h2>
 
-    <p>
-      Installeer deze app op je telefoon voor snelle toegang
-      en een app-achtige ervaring.
+    <p id="install-description">
+      Installeer de Magazijn-app op je telefoon voor
+      snelle toegang vanaf je beginscherm.
     </p>
 
-    <div
-      class="install-info"
-      id="install-info"
-    >
-      Installeer de app rechtstreeks op je telefoon.
+
+    <!-- Android / Chrome -->
+
+    <div id="android-install-content">
+
+      <button
+        class="install-button"
+        id="btn-install-app">
+        Installeer app
+      </button>
+
     </div>
 
-    <button
-      class="primary"
-      id="btn-install-app"
-      style="display:none;"
-    >
-      📲 App installeren
-    </button>
+
+    <!-- iOS -->
+
+    <div
+      id="ios-install-content"
+      style="display:none;">
+
+      <div class="ios-steps">
+
+        <div>
+          1️⃣ Open deze pagina in <strong>Safari</strong>.
+        </div>
+
+        <div>
+          2️⃣ Druk onderaan op
+          <span class="install-share">□↑</span>
+          <strong>Delen</strong>.
+        </div>
+
+        <div>
+          3️⃣ Kies
+          <strong>"Zet op beginscherm"</strong>.
+        </div>
+
+      </div>
+
+    </div>
+
 
     <button
       class="install-close"
-      id="btn-close-install"
-    >
+      id="btn-close-install">
       Misschien later
     </button>
 
   </div>
 
+</div>
+
+
+<!-- =======================================================
+     UPDATE MELDING
+     ======================================================= -->
+
+<div
+  class="update-message"
+  id="update-message">
+  Nieuwe versie gevonden. De app wordt bijgewerkt...
 </div>
 
 
@@ -910,13 +879,27 @@
    ========================================================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBHao9v3GvW-IONs-R2TVDt-vGxMc4fxKE",
-  authDomain: "dghmagazijn-d38bf.firebaseapp.com",
-  projectId: "dghmagazijn-d38bf",
-  storageBucket: "dghmagazijn-d38bf.firebasestorage.app",
-  messagingSenderId: "725175536466",
-  appId: "1:725175536466:web:6da1c46b81b5dcb0e8888b"
+
+  apiKey:
+    "AIzaSyBHao9v3GvW-IONs-R2TVDt-vGxMc4fxKE",
+
+  authDomain:
+    "dghmagazijn-d38bf.firebaseapp.com",
+
+  projectId:
+    "dghmagazijn-d38bf",
+
+  storageBucket:
+    "dghmagazijn-d38bf.firebasestorage.app",
+
+  messagingSenderId:
+    "725175536466",
+
+  appId:
+    "1:725175536466:web:6da1c46b81b5dcb0e8888b"
+
 };
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -934,17 +917,121 @@ const variaRef =
 
 /* =========================================================
    SERVICE WORKER
+   AUTOMATISCHE UPDATES
    ========================================================= */
 
 if ("serviceWorker" in navigator) {
 
-  window.addEventListener("load", () => {
+  window.addEventListener("load", async () => {
 
-    navigator.serviceWorker
-      .register("sw.js")
-      .catch(() => {});
+    try {
+
+      const registration =
+        await navigator.serviceWorker.register(
+          "sw.js",
+          {
+            updateViaCache: "none"
+          }
+        );
+
+
+      /*
+         Meteen controleren of er een nieuwe
+         service worker beschikbaar is.
+      */
+
+      await registration.update();
+
+
+      /*
+         Staat er al een nieuwe versie klaar?
+         Dan onmiddellijk activeren.
+      */
+
+      if (registration.waiting) {
+
+        registration.waiting.postMessage({
+          type: "SKIP_WAITING"
+        });
+
+      }
+
+
+      /*
+         Nieuwe update gevonden.
+      */
+
+      registration.addEventListener(
+        "updatefound",
+        () => {
+
+          const newWorker =
+            registration.installing;
+
+          if (!newWorker) {
+            return;
+          }
+
+
+          newWorker.addEventListener(
+            "statechange",
+            () => {
+
+              if (
+                newWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
+
+                document
+                  .getElementById("update-message")
+                  .classList.add("show");
+
+
+                newWorker.postMessage({
+                  type: "SKIP_WAITING"
+                });
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Service Worker fout:",
+        error
+      );
+
+    }
 
   });
+
+
+  /*
+     Zodra de nieuwe service worker controle
+     heeft overgenomen, herlaad de app.
+  */
+
+  let refreshing = false;
+
+  navigator.serviceWorker.addEventListener(
+    "controllerchange",
+    () => {
+
+      if (refreshing) {
+        return;
+      }
+
+      refreshing = true;
+
+      window.location.reload();
+
+    }
+  );
 
 }
 
@@ -988,19 +1075,22 @@ document
    TOAST
    ========================================================= */
 
-function showToast(msg, type = "") {
+function showToast(
+  msg,
+  type = ""
+) {
 
-  const t =
+  const toast =
     document.getElementById("toast");
 
-  t.textContent = msg;
+  toast.textContent = msg;
 
-  t.className =
+  toast.className =
     "toast show " + type;
 
   setTimeout(() => {
 
-    t.classList.remove("show");
+    toast.classList.remove("show");
 
   }, 2600);
 
@@ -1018,41 +1108,71 @@ let currentItem = null;
 
 document
   .getElementById("btn-start-scan")
-  .addEventListener("click", () => {
+  .addEventListener(
+    "click",
+    () => {
 
-    document
-      .getElementById("scan-result-card")
-      .style.display = "none";
-
-    if (scanner) return;
-
-    scanner =
-      new Html5Qrcode("qr-reader");
-
-    scanner.start(
-      { facingMode: "environment" },
-      {
-        fps: 10,
-        qrbox: 240
-      },
-      onScanSuccess,
-      () => {}
-    )
-    .catch(() => {
-
-      showToast(
-        "Kan camera niet starten. Controleer toestemming.",
-        "error"
-      );
-
-    });
-
-  });
+      document
+        .getElementById(
+          "scan-result-card"
+        )
+        .style.display = "none";
 
 
-async function onScanSuccess(decodedText) {
+      if (scanner) {
+        return;
+      }
 
-  await scanner.pause(true);
+
+      scanner =
+        new Html5Qrcode(
+          "qr-reader"
+        );
+
+
+      scanner.start(
+
+        {
+          facingMode: "environment"
+        },
+
+        {
+          fps: 10,
+          qrbox: 240
+        },
+
+        onScanSuccess,
+
+        () => {}
+
+      )
+      .catch(() => {
+
+        showToast(
+          "Kan camera niet starten. Controleer toestemming.",
+          "error"
+        );
+
+      });
+
+    }
+  );
+
+
+/* =========================================================
+   QR SCAN RESULTAAT
+   ========================================================= */
+
+async function onScanSuccess(
+  decodedText
+) {
+
+  try {
+
+    await scanner.pause(true);
+
+  } catch (e) {}
+
 
   const snap =
     await itemsRef
@@ -1072,15 +1192,18 @@ async function onScanSuccess(decodedText) {
       "error"
     );
 
-    scanner.resume();
+
+    try {
+      await scanner.resume();
+    } catch (e) {}
 
     return;
-
   }
 
 
   const d =
     snap.docs[0];
+
 
   currentItem = {
     id: d.id,
@@ -1089,30 +1212,43 @@ async function onScanSuccess(decodedText) {
 
 
   document
-    .getElementById("scan-item-name")
+    .getElementById(
+      "scan-item-name"
+    )
     .textContent =
       currentItem.name;
 
 
   document
-    .getElementById("scan-item-stock")
+    .getElementById(
+      "scan-item-stock"
+    )
     .textContent =
       `Huidige voorraad: ${currentItem.currentStock} (minimum: ${currentItem.minStock})`;
 
 
   document
-    .getElementById("scan-amount")
+    .getElementById(
+      "scan-amount"
+    )
     .value = 1;
 
 
   document
-    .getElementById("scan-result-card")
+    .getElementById(
+      "scan-result-card"
+    )
     .style.display = "block";
 
 
-  await scanner.stop();
+  try {
 
-  scanner.clear();
+    await scanner.stop();
+
+    scanner.clear();
+
+  } catch (e) {}
+
 
   scanner = null;
 
@@ -1120,7 +1256,7 @@ async function onScanSuccess(decodedText) {
 
 
 /* =========================================================
-   AFBOEKEN VIA SCANNER
+   AFBOEKEN
    ========================================================= */
 
 document
@@ -1131,9 +1267,9 @@ document
 
       const amount =
         parseInt(
-          document
-            .getElementById("scan-amount")
-            .value,
+          document.getElementById(
+            "scan-amount"
+          ).value,
           10
         );
 
@@ -1150,17 +1286,115 @@ document
         );
 
         return;
-
       }
+
+
+      const itemDocRef =
+        itemsRef.doc(
+          currentItem.id
+        );
 
 
       try {
 
-        await changeStock(
-          currentItem,
-          -amount,
-          "afboeking"
-        );
+        const newStock =
+          await db.runTransaction(
+            async (tx) => {
+
+              const snap =
+                await tx.get(
+                  itemDocRef
+                );
+
+
+              if (!snap.exists) {
+
+                throw new Error(
+                  "Artikel bestaat niet meer."
+                );
+
+              }
+
+
+              const data =
+                snap.data();
+
+
+              const currentStock =
+                Number(
+                  data.currentStock ?? 0
+                );
+
+
+              const updated =
+                currentStock - amount;
+
+
+              if (updated < 0) {
+
+                throw new Error(
+                  "Onvoldoende voorraad."
+                );
+
+              }
+
+
+              tx.update(
+                itemDocRef,
+                {
+                  currentStock:
+                    updated
+                }
+              );
+
+
+              return updated;
+
+            }
+          );
+
+
+        await movementsRef.add({
+
+          itemId:
+            currentItem.id,
+
+          itemName:
+            currentItem.name,
+
+          amount:
+            -amount,
+
+          resultingStock:
+            newStock,
+
+          type:
+            "deduction",
+
+          timestamp:
+            firebase.firestore.FieldValue.serverTimestamp()
+
+        });
+
+
+        if (
+          newStock <
+          currentItem.minStock
+        ) {
+
+          showToast(
+            `Afgeboekt. Let op: lage voorraad (${newStock}/${currentItem.minStock}).`,
+            "error"
+          );
+
+        } else {
+
+          showToast(
+            `Afgeboekt. Nieuwe voorraad: ${newStock}.`,
+            "ok"
+          );
+
+        }
 
 
         document
@@ -1186,7 +1420,7 @@ document
 
 
 /* =========================================================
-   LEVERING VIA SCANNER
+   BIJBOEKEN / LEVERING
    ========================================================= */
 
 document
@@ -1197,9 +1431,9 @@ document
 
       const amount =
         parseInt(
-          document
-            .getElementById("scan-amount")
-            .value,
+          document.getElementById(
+            "scan-amount"
+          ).value,
           10
         );
 
@@ -1216,16 +1450,94 @@ document
         );
 
         return;
-
       }
+
+
+      const itemDocRef =
+        itemsRef.doc(
+          currentItem.id
+        );
 
 
       try {
 
-        await changeStock(
-          currentItem,
-          amount,
-          "levering"
+        const newStock =
+          await db.runTransaction(
+            async (tx) => {
+
+              const snap =
+                await tx.get(
+                  itemDocRef
+                );
+
+
+              if (!snap.exists) {
+
+                throw new Error(
+                  "Artikel bestaat niet meer."
+                );
+
+              }
+
+
+              const data =
+                snap.data();
+
+
+              const currentStock =
+                Number(
+                  data.currentStock ?? 0
+                );
+
+
+              const updated =
+                currentStock + amount;
+
+
+              tx.update(
+                itemDocRef,
+                {
+                  currentStock:
+                    updated
+                }
+              );
+
+
+              return updated;
+
+            }
+          );
+
+
+        await movementsRef.add({
+
+          itemId:
+            currentItem.id,
+
+          itemName:
+            currentItem.name,
+
+          amount:
+            amount,
+
+          resultingStock:
+            newStock,
+
+          type:
+            "addition",
+
+          reason:
+            "levering",
+
+          timestamp:
+            firebase.firestore.FieldValue.serverTimestamp()
+
+        });
+
+
+        showToast(
+          `Bijgeboekt. Nieuwe voorraad: ${newStock}.`,
+          "ok"
         );
 
 
@@ -1241,6 +1553,7 @@ document
       } catch (err) {
 
         showToast(
+          "Fout bij bijboeken: " +
           err.message,
           "error"
         );
@@ -1252,172 +1565,72 @@ document
 
 
 /* =========================================================
-   CENTRALE VOORRAADFUNCTIE
+   VOORRAAD OVERZICHT
    ========================================================= */
 
-async function changeStock(
-  item,
-  amount,
-  type
-) {
+itemsRef.onSnapshot(
+  snap => {
 
-  const itemDocRef =
-    itemsRef.doc(item.id);
-
-
-  const newStock =
-    await db.runTransaction(
-      async tx => {
-
-        const snap =
-          await tx.get(
-            itemDocRef
-          );
+    const items =
+      snap.docs.map(
+        d => ({
+          id: d.id,
+          ...d.data()
+        })
+      );
 
 
-        if (!snap.exists) {
+    items.sort(
+      (a, b) => {
 
-          throw new Error(
-            "Artikel bestaat niet meer."
-          );
-
-        }
-
-
-        const data =
-          snap.data();
+        const aLow =
+          Number(a.currentStock ?? 0) <
+          Number(a.minStock ?? 0);
 
 
-        const currentStock =
-          Number(
-            data.currentStock || 0
-          );
+        const bLow =
+          Number(b.currentStock ?? 0) <
+          Number(b.minStock ?? 0);
 
 
-        const updated =
-          currentStock + amount;
+        if (aLow !== bLow) {
 
-
-        if (
-          type === "afboeking" &&
-          updated < 0
-        ) {
-
-          throw new Error(
-            "Onvoldoende voorraad."
-          );
+          return aLow ? -1 : 1;
 
         }
 
 
-        tx.update(
-          itemDocRef,
-          {
-            currentStock: updated
-          }
+        return a.name.localeCompare(
+          b.name
         );
-
-
-        return updated;
 
       }
     );
 
 
-  await movementsRef.add({
+    renderList(items);
 
-    itemId: item.id,
+  },
 
-    itemName: item.name,
+  error => {
 
-    amount: amount,
-
-    resultingStock: newStock,
-
-    type: type,
-
-    timestamp:
-      firebase.firestore
-        .FieldValue
-        .serverTimestamp()
-
-  });
-
-
-  if (type === "levering") {
-
-    showToast(
-      `Levering toegevoegd. Nieuwe voorraad: ${newStock}.`,
-      "ok"
+    console.error(
+      "Voorraad fout:",
+      error
     );
 
-  } else {
-
-    if (
-      newStock < item.minStock
-    ) {
-
-      showToast(
-        `Afgeboekt. Let op: lage voorraad (${newStock}/${item.minStock}).`,
-        "error"
-      );
-
-    } else {
-
-      showToast(
-        `Afgeboekt. Nieuwe voorraad: ${newStock}.`,
-        "ok"
-      );
-
-    }
+    showToast(
+      "Kan voorraad niet laden.",
+      "error"
+    );
 
   }
-
-}
+);
 
 
 /* =========================================================
-   OVERZICHT
+   VOORRAAD RENDEREN
    ========================================================= */
-
-itemsRef.onSnapshot(snap => {
-
-  const items =
-    snap.docs.map(d => ({
-      id: d.id,
-      ...d.data()
-    }));
-
-
-  items.sort((a, b) => {
-
-    const aLow =
-      a.currentStock < a.minStock;
-
-    const bLow =
-      b.currentStock < b.minStock;
-
-
-    if (aLow !== bLow) {
-
-      return aLow
-        ? -1
-        : 1;
-
-    }
-
-
-    return a.name.localeCompare(
-      b.name
-    );
-
-  });
-
-
-  renderList(items);
-
-});
-
 
 function renderList(items) {
 
@@ -1429,13 +1642,11 @@ function renderList(items) {
 
   if (items.length === 0) {
 
-    list.innerHTML = `
-      <div class="empty">
+    list.innerHTML =
+      `<div class="empty">
         Nog geen artikelen.
-        Voeg er een toe met
-        "+ Nieuw artikel".
-      </div>
-    `;
+        Voeg er een toe met "+ Nieuw artikel".
+      </div>`;
 
     return;
 
@@ -1447,9 +1658,20 @@ function renderList(items) {
 
   items.forEach(item => {
 
+    const currentStock =
+      Number(
+        item.currentStock ?? 0
+      );
+
+
+    const minStock =
+      Number(
+        item.minStock ?? 0
+      );
+
+
     const low =
-      item.currentStock <
-      item.minStock;
+      currentStock < minStock;
 
 
     const row =
@@ -1464,30 +1686,38 @@ function renderList(items) {
 
 
     row.innerHTML = `
+
       <div>
+
         <div class="name">
+
           ${escapeHtml(item.name)}
+
           ${
             low
               ? '<span class="badge">LAAG</span>'
               : ""
           }
+
         </div>
 
         <div class="sub">
-          min. ${item.minStock}
+          min. ${minStock}
         </div>
+
       </div>
 
+
       <div class="qty">
-        ${item.currentStock}
+        ${currentStock}
       </div>
+
     `;
 
 
     row.addEventListener(
       "click",
-      () => openStockActionModal(item)
+      () => openItemModal(item)
     );
 
 
@@ -1498,250 +1728,21 @@ function renderList(items) {
 }
 
 
+/* =========================================================
+   HTML VEILIG MAKEN
+   ========================================================= */
+
 function escapeHtml(str) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
-  div.textContent = str;
+  div.textContent =
+    String(str ?? "");
 
   return div.innerHTML;
-
-}
-
-
-/* =========================================================
-   VOORRAAD ACTIE MODAL
-   ========================================================= */
-
-let stockActionItem = null;
-
-
-function openStockActionModal(item) {
-
-  stockActionItem = item;
-
-
-  document
-    .getElementById(
-      "stock-action-name"
-    )
-    .textContent =
-      item.name;
-
-
-  document
-    .getElementById(
-      "stock-action-current"
-    )
-    .textContent =
-      item.currentStock;
-
-
-  document
-    .getElementById(
-      "stock-action-amount"
-    )
-    .value = 1;
-
-
-  document
-    .getElementById(
-      "stock-action-modal"
-    )
-    .classList.add("show");
-
-}
-
-
-/* =========================================================
-   VOORRAAD MODAL - AFBOEKEN
-   ========================================================= */
-
-document
-  .getElementById(
-    "btn-stock-deduct"
-  )
-  .addEventListener(
-    "click",
-    async () => {
-
-      if (!stockActionItem) {
-        return;
-      }
-
-
-      const amount =
-        parseInt(
-          document
-            .getElementById(
-              "stock-action-amount"
-            )
-            .value,
-          10
-        );
-
-
-      if (
-        !amount ||
-        amount <= 0
-      ) {
-
-        showToast(
-          "Vul een geldig aantal in.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      try {
-
-        await changeStock(
-          stockActionItem,
-          -amount,
-          "afboeking"
-        );
-
-
-        closeStockActionModal();
-
-      } catch (err) {
-
-        showToast(
-          err.message,
-          "error"
-        );
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   VOORRAAD MODAL - LEVERING
-   ========================================================= */
-
-document
-  .getElementById(
-    "btn-stock-add"
-  )
-  .addEventListener(
-    "click",
-    async () => {
-
-      if (!stockActionItem) {
-        return;
-      }
-
-
-      const amount =
-        parseInt(
-          document
-            .getElementById(
-              "stock-action-amount"
-            )
-            .value,
-          10
-        );
-
-
-      if (
-        !amount ||
-        amount <= 0
-      ) {
-
-        showToast(
-          "Vul een geldig aantal in.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      try {
-
-        await changeStock(
-          stockActionItem,
-          amount,
-          "levering"
-        );
-
-
-        closeStockActionModal();
-
-      } catch (err) {
-
-        showToast(
-          err.message,
-          "error"
-        );
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   VOORRAAD MODAL - BEWERKEN
-   ========================================================= */
-
-document
-  .getElementById(
-    "btn-stock-edit"
-  )
-  .addEventListener(
-    "click",
-    () => {
-
-      if (!stockActionItem) {
-        return;
-      }
-
-
-      const item =
-        stockActionItem;
-
-
-      closeStockActionModal();
-
-
-      openItemModal(item);
-
-    }
-  );
-
-
-/* =========================================================
-   VOORRAAD MODAL - ANNULEREN
-   ========================================================= */
-
-document
-  .getElementById(
-    "btn-stock-cancel"
-  )
-  .addEventListener(
-    "click",
-    closeStockActionModal
-  );
-
-
-function closeStockActionModal() {
-
-  document
-    .getElementById(
-      "stock-action-modal"
-    )
-    .classList.remove("show");
-
-
-  stockActionItem = null;
 
 }
 
@@ -1754,9 +1755,7 @@ let editingItemId = null;
 
 
 document
-  .getElementById(
-    "btn-add-item"
-  )
+  .getElementById("btn-add-item")
   .addEventListener(
     "click",
     () => openItemModal(null)
@@ -1764,9 +1763,7 @@ document
 
 
 document
-  .getElementById(
-    "btn-cancel-item"
-  )
+  .getElementById("btn-cancel-item")
   .addEventListener(
     "click",
     closeItemModal
@@ -1892,9 +1889,7 @@ function closeItemModal() {
    ========================================================= */
 
 document
-  .getElementById(
-    "btn-save-item"
-  )
+  .getElementById("btn-save-item")
   .addEventListener(
     "click",
     async () => {
@@ -1955,10 +1950,12 @@ document
 
 
       const data = {
+
         name,
         qrCode,
         currentStock,
         minStock
+
       };
 
 
@@ -2000,31 +1997,28 @@ document
 
 
 /* =========================================================
-   VARIA TOEVOEGEN
+   VARIA
    ========================================================= */
 
 document
-  .getElementById(
-    "btn-add-varia"
-  )
+  .getElementById("btn-save-varia")
   .addEventListener(
     "click",
     async () => {
 
-      const input =
-        document.getElementById(
-          "varia-input"
-        );
-
-
       const text =
-        input.value.trim();
+        document
+          .getElementById(
+            "varia-text"
+          )
+          .value
+          .trim();
 
 
       if (!text) {
 
         showToast(
-          "Geef eerst een artikel in.",
+          "Vul eerst een artikel in.",
           "error"
         );
 
@@ -2037,21 +2031,23 @@ document
 
         await variaRef.add({
 
-          text: text,
+          text,
 
           timestamp:
-            firebase.firestore
-              .FieldValue
-              .serverTimestamp()
+            firebase.firestore.FieldValue.serverTimestamp()
 
         });
 
 
-        input.value = "";
+        document
+          .getElementById(
+            "varia-text"
+          )
+          .value = "";
 
 
         showToast(
-          "Toegevoegd aan de bestellijst.",
+          "Varia toegevoegd.",
           "ok"
         );
 
@@ -2070,33 +2066,7 @@ document
 
 
 /* =========================================================
-   VARIA ENTER
-   ========================================================= */
-
-document
-  .getElementById(
-    "varia-input"
-  )
-  .addEventListener(
-    "keydown",
-    event => {
-
-      if (event.key === "Enter") {
-
-        document
-          .getElementById(
-            "btn-add-varia"
-          )
-          .click();
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   VARIA LIJST
+   VARIA OVERZICHT
    ========================================================= */
 
 variaRef
@@ -2105,6 +2075,7 @@ variaRef
     "desc"
   )
   .onSnapshot(
+
     snap => {
 
       const list =
@@ -2115,11 +2086,10 @@ variaRef
 
       if (snap.empty) {
 
-        list.innerHTML = `
-          <div class="empty">
+        list.innerHTML =
+          `<div class="empty">
             Nog geen varia-artikelen toegevoegd.
-          </div>
-        `;
+          </div>`;
 
         return;
 
@@ -2136,73 +2106,228 @@ variaRef
             doc.data();
 
 
-          const row =
+          const item =
             document.createElement(
               "div"
             );
 
 
-          row.className =
-            "varia-row";
+          item.className =
+            "varia-item";
 
 
-          row.innerHTML = `
-            <div class="varia-text">
+          let dateText =
+            "Datum onbekend";
+
+
+          if (
+            data.timestamp &&
+            data.timestamp.toDate
+          ) {
+
+            dateText =
+              data.timestamp
+                .toDate()
+                .toLocaleString(
+                  "nl-BE"
+                );
+
+          }
+
+
+          item.innerHTML = `
+
+            <div class="varia-item-text">
               ${escapeHtml(data.text)}
             </div>
 
+            <div class="varia-item-date">
+              Toegevoegd: ${escapeHtml(dateText)}
+            </div>
+
             <button
-              class="delete-varia"
-              title="Verwijderen"
-            >
-              ×
+              class="varia-delete"
+              data-id="${escapeHtml(doc.id)}">
+              Verwijderen
             </button>
+
           `;
 
 
-          row
+          item
             .querySelector(
-              ".delete-varia"
+              ".varia-delete"
             )
             .addEventListener(
               "click",
-              async () => {
-
-                try {
-
-                  await variaRef
-                    .doc(doc.id)
-                    .delete();
-
-
-                  showToast(
-                    "Verwijderd.",
-                    "ok"
-                  );
-
-                } catch (err) {
-
-                  showToast(
-                    "Fout bij verwijderen: " +
-                    err.message,
-                    "error"
-                  );
-
-                }
-
-              }
+              () => deleteVaria(doc.id)
             );
 
 
-          list.appendChild(
-            row
-          );
+          list.appendChild(item);
 
         }
       );
 
+    },
+
+    error => {
+
+      console.error(
+        "Varia fout:",
+        error
+      );
+
+      /*
+         Als Firestore nog geen index heeft voor
+         timestamp, proberen we de collectie zonder
+         orderBy te laden.
+      */
+
+      loadVariaWithoutOrdering();
+
     }
+
   );
+
+
+/* =========================================================
+   VARIA LADEN ZONDER ORDERBY
+   ========================================================= */
+
+function loadVariaWithoutOrdering() {
+
+  variaRef
+    .get()
+    .then(
+      snap => {
+
+        const list =
+          document.getElementById(
+            "varia-list"
+          );
+
+
+        list.innerHTML = "";
+
+
+        if (snap.empty) {
+
+          list.innerHTML =
+            `<div class="empty">
+              Nog geen varia-artikelen toegevoegd.
+            </div>`;
+
+          return;
+
+        }
+
+
+        snap.docs.forEach(
+          doc => {
+
+            const data =
+              doc.data();
+
+
+            const item =
+              document.createElement(
+                "div"
+              );
+
+
+            item.className =
+              "varia-item";
+
+
+            item.innerHTML = `
+
+              <div class="varia-item-text">
+                ${escapeHtml(data.text)}
+              </div>
+
+              <button
+                class="varia-delete"
+                data-id="${escapeHtml(doc.id)}">
+                Verwijderen
+              </button>
+
+            `;
+
+
+            item
+              .querySelector(
+                ".varia-delete"
+              )
+              .addEventListener(
+                "click",
+                () =>
+                  deleteVaria(doc.id)
+              );
+
+
+            list.appendChild(item);
+
+          }
+        );
+
+      }
+    )
+    .catch(
+      err => {
+
+        console.error(
+          err
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   VARIA VERWIJDEREN
+   ========================================================= */
+
+async function deleteVaria(
+  id
+) {
+
+  const confirmed =
+    confirm(
+      "Deze varia verwijderen?"
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    await variaRef
+      .doc(id)
+      .delete();
+
+
+    showToast(
+      "Varia verwijderd.",
+      "ok"
+    );
+
+  } catch (err) {
+
+    showToast(
+      "Fout bij verwijderen: " +
+      err.message,
+      "error"
+    );
+
+  }
+
+}
 
 
 /* =========================================================
@@ -2212,40 +2337,39 @@ variaRef
 let deferredInstallPrompt = null;
 
 
-const installModal =
+const installBackdrop =
   document.getElementById(
-    "install-modal"
+    "install-backdrop"
   );
 
 
-const installInfo =
-  document.getElementById(
-    "install-info"
+/*
+   Detecteer iPhone/iPad/iPod.
+*/
+
+const isIOS =
+  /iphone|ipad|ipod/i.test(
+    navigator.userAgent
   );
 
 
-const installButton =
-  document.getElementById(
-    "btn-install-app"
-  );
+/*
+   Controleer of de app reeds als PWA
+   geïnstalleerd / standalone draait.
+*/
+
+const isStandalone =
+  window.matchMedia(
+    "(display-mode: standalone)"
+  ).matches ||
+  window.navigator.standalone === true;
 
 
-function isAppInstalled() {
-
-  return (
-    window.matchMedia(
-      "(display-mode: standalone)"
-    ).matches ||
-
-    window.navigator.standalone === true
-  );
-
-}
-
-
-/* =========================================================
-   ANDROID INSTALL PROMPT
-   ========================================================= */
+/*
+   Android / Chrome / Edge enz.
+   geven dit event wanneer de app
+   daadwerkelijk installeerbaar is.
+*/
 
 window.addEventListener(
   "beforeinstallprompt",
@@ -2257,188 +2381,196 @@ window.addEventListener(
       event;
 
 
-    prepareInstallPopup();
+    /*
+       We wachten even zodat de popup
+       niet onmiddellijk bij het laden
+       van de website in beeld springt.
+    */
+
+    setTimeout(
+      showInstallPopup,
+      1800
+    );
 
   }
 );
 
 
 /* =========================================================
-   INSTALLEREN
+   INSTALLATIE POPUP TONEN
    ========================================================= */
 
-installButton.addEventListener(
-  "click",
-  async () => {
+function showInstallPopup() {
 
-    if (!deferredInstallPrompt) {
-      return;
-    }
+  /*
+     Niet tonen wanneer de app al geïnstalleerd is.
+  */
+
+  if (isStandalone) {
+    return;
+  }
 
 
-    deferredInstallPrompt.prompt();
+  /*
+     Niet opnieuw tonen als de gebruiker
+     onlangs "misschien later" koos.
+  */
+
+  const dismissed =
+    localStorage.getItem(
+      "magazijn_install_dismissed"
+    );
 
 
-    const result =
-      await deferredInstallPrompt.userChoice;
+  if (dismissed) {
+
+    const dismissedAt =
+      parseInt(
+        dismissed,
+        10
+      );
+
+
+    /*
+       Na 7 dagen opnieuw vragen.
+    */
+
+    const sevenDays =
+      7 * 24 * 60 * 60 * 1000;
 
 
     if (
-      result.outcome === "accepted"
+      Date.now() - dismissedAt <
+      sevenDays
     ) {
 
-      closeInstallPopup();
+      return;
+
+    }
+
+  }
+
+
+  const androidContent =
+    document.getElementById(
+      "android-install-content"
+    );
+
+
+  const iosContent =
+    document.getElementById(
+      "ios-install-content"
+    );
+
+
+  /*
+     iOS
+  */
+
+  if (isIOS) {
+
+    androidContent.style.display =
+      "none";
+
+    iosContent.style.display =
+      "block";
+
+  }
+
+  /*
+     Android / andere browsers
+  */
+
+  else {
+
+    /*
+       Alleen echte installatieknop tonen
+       wanneer de browser de PWA-installatie
+       ondersteunt.
+    */
+
+    if (!deferredInstallPrompt) {
+
+      /*
+         Op sommige browsers kan de app wel
+         installeerbaar zijn, maar wordt het
+         event nog niet gegeven.
+
+         In dat geval geen valse knop tonen.
+      */
+
+      return;
 
     }
 
 
-    deferredInstallPrompt =
-      null;
+    androidContent.style.display =
+      "block";
+
+    iosContent.style.display =
+      "none";
 
   }
-);
 
 
-/* =========================================================
-   IOS DETECTIE
-   ========================================================= */
-
-function isIOS() {
-
-  return (
-
-    /iPad|iPhone|iPod/.test(
-      navigator.userAgent
-    )
-
-    ||
-
-    (
-      navigator.platform ===
-        "MacIntel" &&
-      navigator.maxTouchPoints > 1
-    )
-
+  installBackdrop.classList.add(
+    "show"
   );
 
 }
 
 
 /* =========================================================
-   INSTALLATIE POPUP
+   INSTALLATIEKNOP
    ========================================================= */
 
-function prepareInstallPopup() {
+document
+  .getElementById(
+    "btn-install-app"
+  )
+  .addEventListener(
+    "click",
+    async () => {
 
-  if (isAppInstalled()) {
-    return;
-  }
+      if (!deferredInstallPrompt) {
 
+        return;
 
-  /* Android */
-
-  if (deferredInstallPrompt) {
-
-    installInfo.innerHTML = `
-      <strong>Android</strong><br>
-      Installeer Magazijn rechtstreeks op je telefoon.
-      De app verschijnt daarna tussen je andere apps.
-    `;
+      }
 
 
-    installButton.style.display =
-      "block";
+      deferredInstallPrompt.prompt();
 
 
-    setTimeout(
-      () => showInstallPopup(),
-      1200
-    );
+      const result =
+        await deferredInstallPrompt.userChoice;
 
 
-    return;
+      if (
+        result &&
+        result.outcome ===
+        "accepted"
+      ) {
 
-  }
+        showToast(
+          "Magazijn wordt geïnstalleerd.",
+          "ok"
+        );
 
-
-  /* iPhone / iPad */
-
-  if (isIOS()) {
-
-    installInfo.innerHTML = `
-      <strong>iPhone / iPad</strong><br><br>
-
-      1. Tik op
-      <span class="ios-share">⬆️</span>
-      <strong>Delen</strong>.<br><br>
-
-      2. Kies
-      <strong>"Zet op beginscherm"</strong>.<br><br>
-
-      3. Tik daarna op
-      <strong>"Voeg toe"</strong>.
-    `;
+      }
 
 
-    installButton.style.display =
-      "none";
+      deferredInstallPrompt = null;
 
+      closeInstallPopup();
 
-    setTimeout(
-      () => showInstallPopup(),
-      1200
-    );
-
-
-    return;
-
-  }
-
-}
-
-
-/* =========================================================
-   POPUP TONEN
-   ========================================================= */
-
-function showInstallPopup() {
-
-  if (
-    localStorage.getItem(
-      "magazijn-install-dismissed"
-    ) === "true"
-  ) {
-
-    return;
-
-  }
-
-
-  installModal
-    .classList
-    .add("show");
-
-}
+    }
+  );
 
 
 /* =========================================================
    POPUP SLUITEN
    ========================================================= */
-
-function closeInstallPopup() {
-
-  installModal
-    .classList
-    .remove("show");
-
-
-  localStorage.setItem(
-    "magazijn-install-dismissed",
-    "true"
-  );
-
-}
-
 
 document
   .getElementById(
@@ -2446,51 +2578,45 @@ document
   )
   .addEventListener(
     "click",
-    closeInstallPopup
+    () => {
+
+      localStorage.setItem(
+        "magazijn_install_dismissed",
+        Date.now().toString()
+      );
+
+      closeInstallPopup();
+
+    }
   );
 
 
+function closeInstallPopup() {
+
+  installBackdrop.classList.remove(
+    "show"
+  );
+
+}
+
+
 /* =========================================================
-   APP GEÏNSTALLEERD
+   WANNEER INSTALLATIE VOLTOOID IS
    ========================================================= */
 
 window.addEventListener(
   "appinstalled",
   () => {
 
-    closeInstallPopup();
+    deferredInstallPrompt =
+      null;
 
+    closeInstallPopup();
 
     showToast(
       "Magazijn is geïnstalleerd.",
       "ok"
     );
-
-  }
-);
-
-
-/* =========================================================
-   IOS BIJ LADEN
-   ========================================================= */
-
-window.addEventListener(
-  "load",
-  () => {
-
-    if (isAppInstalled()) {
-      return;
-    }
-
-
-    if (isIOS()) {
-
-      setTimeout(
-        () => prepareInstallPopup(),
-        1500
-      );
-
-    }
 
   }
 );
