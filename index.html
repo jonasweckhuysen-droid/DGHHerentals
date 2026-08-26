@@ -426,6 +426,62 @@ label {
 
 
 /* =========================================================
+   STOCKTELLING
+   ========================================================= */
+
+.telling-intro {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.telling-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background: var(--card);
+}
+
+.telling-row.changed {
+  border-color: var(--ink);
+  background: #EEF0F6;
+}
+
+.telling-row .t-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.telling-row .t-name {
+  font-weight: 700;
+}
+
+.telling-row .t-current {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.telling-row input[type="number"] {
+  width: 90px;
+  margin-bottom: 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.telling-save-bar {
+  position: sticky;
+  bottom: 12px;
+  margin-top: 16px;
+}
+
+
+/* =========================================================
    VARIA
    ========================================================= */
 
@@ -628,6 +684,12 @@ label {
     Varia
   </button>
 
+  <button
+    class="tab-btn"
+    data-view="telling">
+    Telling
+  </button>
+
 </nav>
 
 
@@ -776,6 +838,42 @@ label {
 
 
     <div id="varia-list"></div>
+
+  </section>
+
+
+  <!-- =====================================================
+       TELLING VIEW (STOCKTELLING)
+       ===================================================== -->
+
+  <section id="view-telling" class="view">
+
+    <div class="card">
+
+      <h3 style="margin-top:0;">
+        Stocktelling
+      </h3>
+
+      <p class="telling-intro">
+        Tel de fysieke voorraad van elk artikel en vul het
+        geteld aantal in. Enkel artikelen waar het geteld
+        aantal verschilt van de huidige voorraad worden
+        aangepast wanneer je op "Telling opslaan" drukt.
+      </p>
+
+    </div>
+
+    <div id="telling-list"></div>
+
+    <div class="telling-save-bar">
+
+      <button
+        class="primary"
+        id="btn-save-telling">
+        Telling opslaan
+      </button>
+
+    </div>
 
   </section>
 
@@ -1729,6 +1827,8 @@ itemsRef.onSnapshot(
 
     renderList(items);
 
+    renderTellingList(items);
+
   },
 
   error => {
@@ -2063,6 +2163,301 @@ function escapeHtml(str) {
   return div.innerHTML;
 
 }
+
+
+/* =========================================================
+   STOCKTELLING RENDEREN
+   ========================================================= */
+
+function renderTellingList(items) {
+
+  const list =
+    document.getElementById(
+      "telling-list"
+    );
+
+  if (!list) {
+    return;
+  }
+
+
+  /*
+     Reeds ingevulde telwaarden bewaren zodat
+     ze niet verloren gaan bij een live-update
+     vanuit Firestore terwijl iemand aan het
+     tellen is.
+  */
+
+  const previousValues = {};
+
+  list
+    .querySelectorAll("input[data-id]")
+    .forEach(input => {
+
+      previousValues[input.dataset.id] =
+        input.value;
+
+    });
+
+
+  if (items.length === 0) {
+
+    list.innerHTML =
+      `<div class="empty">
+        Nog geen artikelen om te tellen.
+      </div>`;
+
+    return;
+
+  }
+
+
+  const sorted =
+    [...items].sort(
+      (a, b) =>
+        a.name.localeCompare(b.name)
+    );
+
+
+  list.innerHTML = "";
+
+
+  sorted.forEach(item => {
+
+    const currentStock =
+      Number(
+        item.currentStock ?? 0
+      );
+
+
+    const row =
+      document.createElement(
+        "div"
+      );
+
+    row.className =
+      "telling-row";
+
+
+    row.innerHTML = `
+
+      <div class="t-info">
+        <div class="t-name">
+          ${escapeHtml(item.name)}
+        </div>
+        <div class="t-current">
+          huidig: ${currentStock}
+        </div>
+      </div>
+
+      <input
+        type="number"
+        min="0"
+        inputmode="numeric"
+        data-id="${escapeHtml(item.id)}"
+        data-current="${currentStock}"
+        value="${
+          previousValues[item.id] !== undefined
+            ? escapeHtml(previousValues[item.id])
+            : currentStock
+        }">
+
+    `;
+
+
+    const input =
+      row.querySelector("input");
+
+
+    const markIfChanged = () => {
+
+      const val =
+        parseInt(input.value, 10);
+
+      const changed =
+        !isNaN(val) &&
+        val !== currentStock;
+
+      row.classList.toggle(
+        "changed",
+        changed
+      );
+
+    };
+
+
+    input.addEventListener(
+      "input",
+      markIfChanged
+    );
+
+
+    markIfChanged();
+
+
+    list.appendChild(row);
+
+  });
+
+}
+
+
+/* =========================================================
+   STOCKTELLING OPSLAAN
+   ========================================================= */
+
+document
+  .getElementById("btn-save-telling")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const inputs =
+        Array.from(
+          document.querySelectorAll(
+            "#telling-list input[data-id]"
+          )
+        );
+
+
+      const changes =
+        inputs
+          .map(input => {
+
+            const counted =
+              parseInt(
+                input.value,
+                10
+              );
+
+            const current =
+              parseInt(
+                input.dataset.current,
+                10
+              );
+
+            return {
+              id: input.dataset.id,
+              counted,
+              current
+            };
+
+          })
+          .filter(c =>
+            !isNaN(c.counted) &&
+            c.counted >= 0 &&
+            c.counted !== c.current
+          );
+
+
+      if (changes.length === 0) {
+
+        showToast(
+          "Geen wijzigingen om op te slaan.",
+          ""
+        );
+
+        return;
+
+      }
+
+
+      const confirmed =
+        confirm(
+          `${changes.length} artikel(en) worden aangepast op basis van de telling. Doorgaan?`
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      try {
+
+        const batch =
+          db.batch();
+
+
+        changes.forEach(change => {
+
+          const itemDocRef =
+            itemsRef.doc(change.id);
+
+
+          batch.update(
+            itemDocRef,
+            {
+              currentStock:
+                change.counted
+            }
+          );
+
+
+          const itemInfo =
+            allItems.find(
+              i => i.id === change.id
+            );
+
+
+          const movementRef =
+            movementsRef.doc();
+
+
+          batch.set(
+            movementRef,
+            {
+
+              itemId:
+                change.id,
+
+              itemName:
+                itemInfo
+                  ? itemInfo.name
+                  : "",
+
+              amount:
+                change.counted -
+                change.current,
+
+              resultingStock:
+                change.counted,
+
+              type:
+                "count",
+
+              reason:
+                "stocktelling",
+
+              timestamp:
+                firebase.firestore.FieldValue.serverTimestamp()
+
+            }
+          );
+
+        });
+
+
+        await batch.commit();
+
+
+        showToast(
+          `Telling opgeslagen: ${changes.length} artikel(en) aangepast.`,
+          "ok"
+        );
+
+      } catch (err) {
+
+        showToast(
+          "Fout bij opslaan van telling: " +
+          err.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
 
 
 /* =========================================================
