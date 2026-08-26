@@ -349,6 +349,83 @@ label {
 
 
 /* =========================================================
+   ZOEKEN
+   ========================================================= */
+
+.search-wrap {
+  position: relative;
+}
+
+.search-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% - 8px);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(22,33,62,0.12);
+  z-index: 15;
+  overflow: hidden;
+  display: none;
+}
+
+.search-suggestions.show {
+  display: block;
+}
+
+.search-suggestion {
+  padding: 12px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-suggestion:last-child {
+  border-bottom: none;
+}
+
+.search-suggestion:active {
+  background: var(--paper);
+}
+
+.search-suggestion .s-name {
+  font-weight: 600;
+}
+
+.search-suggestion .s-name mark {
+  background: none;
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.search-suggestion .s-stock {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.search-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 16px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.search-divider::before,
+.search-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+
+/* =========================================================
    VARIA
    ========================================================= */
 
@@ -561,6 +638,31 @@ label {
        ===================================================== -->
 
   <section id="view-scan" class="view active">
+
+    <div class="card">
+
+      <label for="item-search">
+        Zoek artikel
+      </label>
+
+      <div class="search-wrap">
+
+        <input
+          type="text"
+          id="item-search"
+          placeholder="Typ minstens 3 letters, bv. bra..."
+          autocomplete="off">
+
+        <div
+          class="search-suggestions"
+          id="search-suggestions">
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="search-divider">of scan een QR-code</div>
 
     <div class="card">
 
@@ -1205,10 +1307,33 @@ async function onScanSuccess(
     snap.docs[0];
 
 
-  currentItem = {
+  selectItem({
     id: d.id,
     ...d.data()
-  };
+  });
+
+
+  try {
+
+    await scanner.stop();
+
+    scanner.clear();
+
+  } catch (e) {}
+
+
+  scanner = null;
+
+}
+
+
+/* =========================================================
+   ARTIKEL SELECTEREN (VIA SCAN OF ZOEKEN)
+   ========================================================= */
+
+function selectItem(item) {
+
+  currentItem = item;
 
 
   document
@@ -1239,18 +1364,6 @@ async function onScanSuccess(
       "scan-result-card"
     )
     .style.display = "block";
-
-
-  try {
-
-    await scanner.stop();
-
-    scanner.clear();
-
-  } catch (e) {}
-
-
-  scanner = null;
 
 }
 
@@ -1565,8 +1678,11 @@ document
 
 
 /* =========================================================
-   VOORRAAD OVERZICHT
+   VOORRAAD OVERZICHT (+ LOKALE CACHE VOOR ZOEKEN)
    ========================================================= */
+
+let allItems = [];
+
 
 itemsRef.onSnapshot(
   snap => {
@@ -1578,6 +1694,9 @@ itemsRef.onSnapshot(
           ...d.data()
         })
       );
+
+
+    allItems = items;
 
 
     items.sort(
@@ -1623,6 +1742,205 @@ itemsRef.onSnapshot(
       "Kan voorraad niet laden.",
       "error"
     );
+
+  }
+);
+
+
+/* =========================================================
+   ZOEKEN MET SUGGESTIES
+   ========================================================= */
+
+const searchInput =
+  document.getElementById(
+    "item-search"
+  );
+
+
+const suggestionsBox =
+  document.getElementById(
+    "search-suggestions"
+  );
+
+
+function escapeRegExp(str) {
+
+  return str.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&"
+  );
+
+}
+
+
+function highlightMatch(
+  name,
+  query
+) {
+
+  const safeQuery =
+    escapeRegExp(query);
+
+  const re =
+    new RegExp(
+      `(${safeQuery})`,
+      "ig"
+    );
+
+  return escapeHtml(name).replace(
+    re,
+    match => `<mark>${match}</mark>`
+  );
+
+}
+
+
+searchInput.addEventListener(
+  "input",
+  () => {
+
+    const query =
+      searchInput.value
+        .trim();
+
+
+    if (query.length < 3) {
+
+      suggestionsBox.classList.remove(
+        "show"
+      );
+
+      suggestionsBox.innerHTML = "";
+
+      return;
+
+    }
+
+
+    const lowerQuery =
+      query.toLowerCase();
+
+
+    const matches =
+      allItems
+        .filter(item =>
+          (item.name || "")
+            .toLowerCase()
+            .includes(lowerQuery)
+        )
+        .slice(0, 8);
+
+
+    if (matches.length === 0) {
+
+      suggestionsBox.innerHTML =
+        `<div class="search-suggestion">
+          <span class="s-stock">Geen artikelen gevonden.</span>
+        </div>`;
+
+      suggestionsBox.classList.add(
+        "show"
+      );
+
+      return;
+
+    }
+
+
+    suggestionsBox.innerHTML = "";
+
+
+    matches.forEach(item => {
+
+      const currentStock =
+        Number(
+          item.currentStock ?? 0
+        );
+
+      const minStock =
+        Number(
+          item.minStock ?? 0
+        );
+
+      const low =
+        currentStock < minStock;
+
+
+      const row =
+        document.createElement(
+          "div"
+        );
+
+      row.className =
+        "search-suggestion";
+
+      row.innerHTML = `
+
+        <div class="s-name">
+          ${highlightMatch(item.name, query)}
+        </div>
+
+        <div class="s-stock" ${low ? 'style="color:var(--danger);font-weight:700;"' : ""}>
+          ${currentStock} ${low ? "(laag)" : ""}
+        </div>
+
+      `;
+
+
+      row.addEventListener(
+        "click",
+        () => {
+
+          selectItem(item);
+
+          suggestionsBox.classList.remove(
+            "show"
+          );
+
+          suggestionsBox.innerHTML = "";
+
+          searchInput.value = "";
+
+        }
+      );
+
+
+      suggestionsBox.appendChild(
+        row
+      );
+
+    });
+
+
+    suggestionsBox.classList.add(
+      "show"
+    );
+
+  }
+);
+
+
+/*
+   Suggesties sluiten wanneer er
+   ergens anders getikt wordt.
+*/
+
+document.addEventListener(
+  "click",
+  event => {
+
+    const wrap =
+      document.querySelector(
+        ".search-wrap"
+      );
+
+    if (!wrap.contains(event.target)) {
+
+      suggestionsBox.classList.remove(
+        "show"
+      );
+
+    }
 
   }
 );
