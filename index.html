@@ -705,10 +705,24 @@ label {
   display: none;
 }
 
-.notification-status.show { display: block; }
-.notification-status.ok { background: var(--ok-bg); color: var(--ok); }
-.notification-status.error { background: var(--danger-bg); color: var(--danger); }
-.notification-status.info { background: #EEF0F6; color: var(--ink); }
+.notification-status.show {
+  display: block;
+}
+
+.notification-status.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.notification-status.error {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.notification-status.info {
+  background: #EEF0F6;
+  color: var(--ink);
+}
 
 .notification-button {
   width: auto !important;
@@ -722,9 +736,11 @@ label {
     align-items: flex-start;
     flex-wrap: wrap;
   }
+
   .notification-content {
     flex-basis: calc(100% - 62px);
   }
+
   .notification-button {
     width: 100% !important;
   }
@@ -853,9 +869,17 @@ label {
   color: white;
 }
 
-.log-type-badge.deduction { background: var(--danger); }
-.log-type-badge.addition { background: var(--ok); }
-.log-type-badge.count { background: var(--ink); }
+.log-type-badge.deduction {
+  background: var(--danger);
+}
+
+.log-type-badge.addition {
+  background: var(--ok);
+}
+
+.log-type-badge.count {
+  background: var(--ink);
+}
 
 </style>
 </head>
@@ -863,6 +887,7 @@ label {
 <body>
 
 <header>
+
   <h1>Magazijn Ziekenwagen</h1>
 
   <button
@@ -870,12 +895,29 @@ label {
     id="btn-admin-icon"
     aria-label="Admin">
 
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="8" r="4"></circle>
-      <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round">
+
+      <circle
+        cx="12"
+        cy="8"
+        r="4">
+      </circle>
+
+      <path
+        d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7">
+      </path>
+
     </svg>
 
-    <span class="admin-dot" id="admin-dot"></span>
+    <span
+      class="admin-dot"
+      id="admin-dot">
+    </span>
 
   </button>
 
@@ -920,11 +962,14 @@ label {
 
 <main>
 
+
   <!-- =====================================================
        SCAN VIEW
        ===================================================== -->
 
-  <section id="view-scan" class="view active">
+  <section
+    id="view-scan"
+    class="view active">
 
     <div class="card">
 
@@ -949,7 +994,11 @@ label {
 
     </div>
 
-    <div class="search-divider">of scan een QR-code</div>
+
+    <div class="search-divider">
+      of scan een QR-code
+    </div>
+
 
     <div class="card">
 
@@ -987,7 +1036,6 @@ label {
         value="1"
         inputmode="numeric">
 
-
       <div class="stock-actions">
 
         <button
@@ -1013,7 +1061,9 @@ label {
        OVERVIEW VIEW
        ===================================================== -->
 
-  <section id="view-overview" class="view">
+  <section
+    id="view-overview"
+    class="view">
 
     <button
       class="primary"
@@ -1022,16 +1072,21 @@ label {
       + Nieuw artikel
     </button>
 
-    <!-- =====================================================
-         MELDINGEN
-         ===================================================== -->
+
+    <!-- MELDINGEN -->
 
     <div class="card notification-card">
 
-      <div class="notification-icon">🔔</div>
+      <div class="notification-icon">
+        🔔
+      </div>
 
       <div class="notification-content">
-        <h3>Lage voorraad meldingen</h3>
+
+        <h3>
+          Lage voorraad meldingen
+        </h3>
+
         <p id="notification-description">
           Ontvang op deze telefoon een melding wanneer een artikel
           de minimumvoorraad bereikt.
@@ -1041,6 +1096,7 @@ label {
           class="notification-status"
           id="notification-status">
         </div>
+
       </div>
 
       <button
@@ -1051,6 +1107,7 @@ label {
 
     </div>
 
+
     <div id="item-list"></div>
 
   </section>
@@ -1060,7 +1117,9 @@ label {
        VARIA VIEW
        ===================================================== -->
 
-  <section id="view-varia" class="view">
+  <section
+    id="view-varia"
+    class="view">
 
     <div class="card">
 
@@ -1068,10 +1127,13 @@ label {
         Artikel toevoegen aan Varia
       </h3>
 
-      <p style="color:var(--muted); font-size:0.9rem; line-height:1.5;">
+      <p
+        style="color:var(--muted); font-size:0.9rem; line-height:1.5;">
+
         Staat een artikel niet in de voorraadlijst,
         maar moet het wel besteld worden?
         Noteer het hier.
+
       </p>
 
       <label for="varia-text">
@@ -1080,7 +1142,8 @@ label {
 
       <textarea
         id="varia-text"
-        placeholder="Bv. 2 dozen steriele handschoenen maat L&#10;Bv. Speciale verbandsets voor ambulance 3"></textarea>
+        placeholder="Bv. 2 dozen steriele handschoenen maat L&#10;Bv. Speciale verbandsets voor ambulance 3">
+      </textarea>
 
       <button
         class="primary"
@@ -1097,10 +1160,12 @@ label {
 
 
   <!-- =====================================================
-       TELLING VIEW (STOCKTELLING)
+       TELLING VIEW
        ===================================================== -->
 
-  <section id="view-telling" class="view">
+  <section
+    id="view-telling"
+    class="view">
 
     <div class="card">
 
@@ -1109,15 +1174,19 @@ label {
       </h3>
 
       <p class="telling-intro">
+
         Tel de fysieke voorraad van elk artikel en vul het
         geteld aantal in. Enkel artikelen waar het geteld
         aantal verschilt van de huidige voorraad worden
         aangepast wanneer je op "Telling opslaan" drukt.
+
       </p>
 
     </div>
 
+
     <div id="telling-list"></div>
+
 
     <div class="telling-save-bar">
 
@@ -1133,17 +1202,26 @@ label {
 
 
   <!-- =====================================================
-       LOGBOEK VIEW (ENKEL ADMIN)
+       LOGBOEK VIEW
        ===================================================== -->
 
-  <section id="view-logboek" class="view">
+  <section
+    id="view-logboek"
+    class="view">
 
     <div class="card">
-      <h3 style="margin-top:0;">Logboek</h3>
+
+      <h3 style="margin-top:0;">
+        Logboek
+      </h3>
+
       <p class="telling-intro">
+
         Overzicht van de laatste voorraadbewegingen:
         afboekingen, bijboekingen en correcties via een telling.
+
       </p>
+
     </div>
 
     <div id="logboek-list"></div>
@@ -1176,7 +1254,6 @@ label {
     <h3 id="modal-title">
       Artikel
     </h3>
-
 
     <label for="f-name">
       Naam
@@ -1277,8 +1354,10 @@ label {
     </h2>
 
     <p id="install-description">
+
       Installeer de Magazijn-app op je telefoon voor
       snelle toegang vanaf je beginscherm.
+
     </p>
 
 
@@ -1345,15 +1424,38 @@ label {
   <div class="install-modal login-modal">
 
     <div class="install-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="30" height="30">
-        <circle cx="12" cy="8" r="4"></circle>
-        <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        width="30"
+        height="30">
+
+        <circle
+          cx="12"
+          cy="8"
+          r="4">
+        </circle>
+
+        <path
+          d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7">
+        </path>
+
       </svg>
+
     </div>
 
-    <h2>Admin-login</h2>
+    <h2>
+      Admin-login
+    </h2>
 
-    <p>Voer het wachtwoord in om in te loggen als admin.</p>
+    <p>
+      Voer het wachtwoord in om in te loggen als admin.
+    </p>
 
     <input
       type="password"
@@ -1362,8 +1464,14 @@ label {
       autocomplete="off">
 
     <label class="login-remember">
-      <input type="checkbox" id="admin-remember" checked>
+
+      <input
+        type="checkbox"
+        id="admin-remember"
+        checked>
+
       Onthoud mij op dit toestel
+
     </label>
 
     <button
@@ -1390,7 +1498,9 @@ label {
 <div
   class="update-message"
   id="update-message">
+
   Nieuwe versie gevonden. De app wordt bijgewerkt...
+
 </div>
 
 
@@ -1425,7 +1535,8 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
+const db =
+  firebase.firestore();
 
 const itemsRef =
   db.collection("items");
@@ -1441,299 +1552,477 @@ const variaRef =
    FIREBASE CLOUD MESSAGING
    ========================================================= */
 
-/*
-   VUL HIER JE PUBLIEKE VAPID-KEY IN.
-
-   Firebase Console > Projectinstellingen > Cloud Messaging
-   > Web Push certificates > Generate key pair.
-
-   De VAPID-key is publiek en mag dus in deze HTML staan.
-*/
-const FCM_VAPID_KEY = "BC5gtj2JNs6b-s7K1inZgTvpC0sEXFo6kYDplFdji_Tblj__BU5G6pHtqutnzI-B9dCDlAGDpD5MdrKdvpr3CR8";
+const FCM_VAPID_KEY =
+  "BC5gtj2JNs6b-s7K1inZgTvpC0sEXFo6kYDplFdji_Tblj__BU5G6pHtqutnzI-B9dCDlAGDpD5MdrKdvpr3CR8";
 
 let messaging = null;
 let notificationsInitialized = false;
+
 
 if (
   typeof firebase.messaging === "function" &&
   "Notification" in window
 ) {
+
   try {
-    messaging = firebase.messaging();
+
+    messaging =
+      firebase.messaging();
+
     notificationsInitialized = true;
+
   } catch (error) {
-    console.error("Firebase Messaging kon niet worden gestart:", error);
+
+    console.error(
+      "Firebase Messaging kon niet worden gestart:",
+      error
+    );
+
   }
+
 }
 
-function setNotificationStatus(message, type = "info") {
-  const status = document.getElementById("notification-status");
-  if (!status) return;
 
-  status.textContent = message;
-  status.className = "notification-status show " + type;
+function setNotificationStatus(
+  message,
+  type = "info"
+) {
+
+  const status =
+    document.getElementById(
+      "notification-status"
+    );
+
+  if (!status) {
+    return;
+  }
+
+  status.textContent =
+    message;
+
+  status.className =
+    "notification-status show " + type;
+
 }
+
 
 function updateNotificationButton() {
-  const button = document.getElementById("btn-enable-notifications");
-  const description = document.getElementById("notification-description");
-  if (!button) return;
+
+  const button =
+    document.getElementById(
+      "btn-enable-notifications"
+    );
+
+  const description =
+    document.getElementById(
+      "notification-description"
+    );
+
+  if (!button) {
+    return;
+  }
+
 
   if (!("Notification" in window)) {
-    button.style.display = "none";
+
+    button.style.display =
+      "none";
+
     setNotificationStatus(
       "Deze browser ondersteunt geen pushmeldingen.",
       "error"
     );
+
     return;
+
   }
 
-  if (Notification.permission === "granted") {
-    button.textContent = "✓ Meldingen actief";
-    button.classList.remove("success");
-    button.disabled = false;
+
+  if (
+    Notification.permission ===
+    "granted"
+  ) {
+
+    button.textContent =
+      "✓ Meldingen actief";
+
+    button.disabled =
+      false;
+
     if (description) {
+
       description.textContent =
         "Deze telefoon ontvangt meldingen wanneer een artikel de minimumvoorraad bereikt.";
+
     }
-  } else if (Notification.permission === "denied") {
-    button.textContent = "Meldingen geblokkeerd";
-    button.disabled = true;
+
+  }
+
+  else if (
+    Notification.permission ===
+    "denied"
+  ) {
+
+    button.textContent =
+      "Meldingen geblokkeerd";
+
+    button.disabled =
+      true;
+
     setNotificationStatus(
       "Meldingen zijn door de browser geblokkeerd. Schakel meldingen voor Magazijn in via de instellingen van je browser/telefoon.",
       "error"
     );
-  } else {
-    button.textContent = "Meldingen inschakelen";
-    button.disabled = false;
+
   }
+
+  else {
+
+    button.textContent =
+      "Meldingen inschakelen";
+
+    button.disabled =
+      false;
+
+  }
+
 }
 
-async function enableNotifications() {
-  const button = document.getElementById("btn-enable-notifications");
-  if (!button) return;
 
-  if (!notificationsInitialized || !messaging) {
-    setNotificationStatus(
-      "Meldingen zijn nog niet volledig geconfigureerd. Eerst moet de VAPID-key in index.html worden ingevuld en firebase-messaging-sw.js worden toegevoegd.",
-      "error"
+/* =========================================================
+   MELDINGEN INSCHAKELEN
+   ========================================================= */
+
+async function enableNotifications() {
+
+  const button =
+    document.getElementById(
+      "btn-enable-notifications"
     );
+
+  if (!button) {
     return;
   }
 
-  if (FCM_VAPID_KEY === "VUL_HIER_JE_VAPID_KEY_IN") {
+
+  if (
+    !notificationsInitialized ||
+    !messaging
+  ) {
+
+    setNotificationStatus(
+      "Firebase Cloud Messaging kon niet worden gestart. Controleer de Firebase-configuratie en de service worker.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    FCM_VAPID_KEY ===
+    "VUL_HIER_JE_VAPID_KEY_IN"
+  ) {
+
     setNotificationStatus(
       "De Firebase VAPID-key ontbreekt nog. Voeg deze toe in index.html bij FCM_VAPID_KEY.",
       "error"
     );
+
     return;
+
   }
 
+
   if (!("Notification" in window)) {
+
     setNotificationStatus(
       "Deze browser ondersteunt geen pushmeldingen.",
       "error"
     );
+
     return;
+
   }
 
+
   if (!window.isSecureContext) {
+
     setNotificationStatus(
       "Pushmeldingen werken alleen via HTTPS.",
       "error"
     );
+
     return;
+
   }
 
+
   try {
-    button.disabled = true;
-    button.textContent = "Bezig...";
 
-    const permission = await Notification.requestPermission();
+    button.disabled =
+      true;
 
-    if (permission !== "granted") {
+    button.textContent =
+      "Bezig...";
+
+
+    const permission =
+      await Notification.requestPermission();
+
+
+    if (
+      permission !==
+      "granted"
+    ) {
+
       updateNotificationButton();
-      if (permission === "denied") {
+
+      if (
+        permission ===
+        "denied"
+      ) {
+
         setNotificationStatus(
           "Meldingen zijn geweigerd. Je kunt ze later opnieuw toestaan via de browserinstellingen.",
           "error"
         );
+
       }
+
       return;
+
     }
 
-    const registration = await navigator.serviceWorker.ready;
 
     /*
-       firebase-messaging-sw.js moet in de root van de website staan.
-       De bestaande PWA-service-worker blijft verantwoordelijk voor
-       updates/offline gedrag.
+       Gebruik de reeds geregistreerde
+       service worker van de PWA.
+
+       Deze ene sw.js verzorgt zowel:
+       - PWA/offline werking
+       - automatische updates
+       - Firebase pushmeldingen
     */
-    const token = await messaging.getToken({
-      vapidKey: FCM_VAPID_KEY,
-      serviceWorkerRegistration: registration
-    });
+
+    const registration =
+      await navigator.serviceWorker.ready;
+
+
+    const token =
+      await messaging.getToken({
+
+        vapidKey:
+          FCM_VAPID_KEY,
+
+        serviceWorkerRegistration:
+          registration
+
+      });
+
 
     if (!token) {
-      throw new Error("Firebase heeft geen registratie voor deze telefoon teruggegeven.");
+
+      throw new Error(
+        "Firebase heeft geen registratie voor deze telefoon teruggegeven."
+      );
+
     }
 
+
     /*
-       Elke telefoon krijgt zijn eigen document. We gebruiken een
-       SHA-256-hash als document-ID zodat de FCM-token niet in de URL
-       of documentnaam terechtkomt.
+       Elke telefoon krijgt zijn eigen document.
+
+       We gebruiken een SHA-256-hash als
+       document-ID zodat de FCM-token niet
+       rechtstreeks als document-ID wordt gebruikt.
     */
-    const hashBuffer = await crypto.subtle.digest(
-      "SHA-256",
-      new TextEncoder().encode(token)
-    );
 
-    const tokenId = Array.from(new Uint8Array(hashBuffer))
-      .map(byte => byte.toString(16).padStart(2, "0"))
-      .join("");
+    const hashBuffer =
+      await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(token)
+      );
 
-    await db.collection("notificationTokens").doc(tokenId).set({
-      token,
-      platform: /iPhone|iPad|iPod/i.test(navigator.userAgent)
-        ? "ios"
-        : "android-or-other",
-      userAgent: navigator.userAgent,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      enabled: true
-    }, { merge: true });
+
+    const tokenId =
+      Array.from(
+        new Uint8Array(hashBuffer)
+      )
+        .map(
+          byte =>
+            byte
+              .toString(16)
+              .padStart(2, "0")
+        )
+        .join("");
+
+
+    await db
+      .collection("notificationTokens")
+      .doc(tokenId)
+      .set({
+
+        token,
+
+        platform:
+          /iPhone|iPad|iPod/i.test(
+            navigator.userAgent
+          )
+            ? "ios"
+            : "android-or-other",
+
+        userAgent:
+          navigator.userAgent,
+
+        updatedAt:
+          firebase.firestore.FieldValue
+            .serverTimestamp(),
+
+        enabled:
+          true
+
+      }, {
+        merge: true
+      });
+
 
     updateNotificationButton();
+
+
     setNotificationStatus(
       "Deze telefoon is geregistreerd. Je ontvangt voortaan meldingen wanneer een artikel een lage voorraad bereikt.",
       "ok"
     );
 
+
   } catch (error) {
-    console.error("Fout bij inschakelen van meldingen:", error);
-    button.disabled = false;
-    button.textContent = "Meldingen inschakelen";
+
+    console.error(
+      "Fout bij inschakelen van meldingen:",
+      error
+    );
+
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Meldingen inschakelen";
+
 
     setNotificationStatus(
       "Meldingen konden niet worden ingeschakeld: " +
-      (error && error.message ? error.message : "onbekende fout"),
+      (
+        error &&
+        error.message
+          ? error.message
+          : "onbekende fout"
+      ),
       "error"
     );
+
   }
+
 }
-
-/* Voorbereiden zodra de pagina geladen is. */
-window.addEventListener("load", () => {
-  updateNotificationButton();
-
-  const button = document.getElementById("btn-enable-notifications");
-  if (button) {
-    button.addEventListener("click", enableNotifications);
-  }
-});
 
 
 /* =========================================================
-   SERVICE WORKER
-   AUTOMATISCHE UPDATES
+   MELDINGEN INITIALISEREN
    ========================================================= */
 
-if ("serviceWorker" in navigator) {
+window.addEventListener(
+  "load",
+  () => {
 
-  window.addEventListener("load", async () => {
+    updateNotificationButton();
 
-    try {
-
-      const registration =
-        await navigator.serviceWorker.register(
-          "sw.js",
-          {
-            updateViaCache: "none"
-          }
-        );
-
-
-      /*
-         Meteen controleren of er een nieuwe
-         service worker beschikbaar is.
-      */
-
-      await registration.update();
-
-
-      /*
-         Staat er al een nieuwe versie klaar?
-         Dan onmiddellijk activeren.
-      */
-
-      if (registration.waiting) {
-
-        registration.waiting.postMessage({
-          type: "SKIP_WAITING"
-        });
-
-      }
-
-
-      /*
-         Nieuwe update gevonden.
-      */
-
-      registration.addEventListener(
-        "updatefound",
-        () => {
-
-          const newWorker =
-            registration.installing;
-
-          if (!newWorker) {
-            return;
-          }
-
-
-          newWorker.addEventListener(
-            "statechange",
-            () => {
-
-              if (
-                newWorker.state === "installed" &&
-                navigator.serviceWorker.controller
-              ) {
-
-                document
-                  .getElementById("update-message")
-                  .classList.add("show");
-
-
-                newWorker.postMessage({
-                  type: "SKIP_WAITING"
-                });
-
-              }
-
-            }
-          );
-
-        }
+    const button =
+      document.getElementById(
+        "btn-enable-notifications"
       );
 
-    } catch (error) {
+    if (button) {
 
-      console.error(
-        "Service Worker fout:",
-        error
+      button.addEventListener(
+        "click",
+        enableNotifications
       );
 
     }
 
-  });
+  }
+);
+
+
+/* =========================================================
+   SERVICE WORKER
+   =========================================================
+
+   sw.js verzorgt:
+   - PWA/offline cache
+   - Firebase Cloud Messaging
+   - automatische updates
+   - onmiddellijk activeren van nieuwe versies
+   ========================================================= */
+
+if (
+  "serviceWorker" in navigator
+) {
+
+  window.addEventListener(
+    "load",
+    async () => {
+
+      try {
+
+        const registration =
+          await navigator.serviceWorker.register(
+            "sw.js",
+            {
+              updateViaCache: "none"
+            }
+          );
+
+
+        /*
+           Controleer meteen of er een nieuwe
+           service worker beschikbaar is.
+        */
+
+        await registration.update();
+
+
+        console.log(
+          "[Magazijn] Service worker actief:",
+          registration.scope
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Service Worker fout:",
+          error
+        );
+
+      }
+
+    }
+  );
 
 
   /*
-     Zodra de nieuwe service worker controle
-     heeft overgenomen, herlaad de app.
+     De nieuwe service worker gebruikt
+     skipWaiting() en clients.claim().
+
+     Zodra hij de controle overneemt,
+     laden we de pagina opnieuw.
   */
 
   let refreshing = false;
+
 
   navigator.serviceWorker.addEventListener(
     "controllerchange",
@@ -1745,7 +2034,29 @@ if ("serviceWorker" in navigator) {
 
       refreshing = true;
 
-      window.location.reload();
+
+      const updateMessage =
+        document.getElementById(
+          "update-message"
+        );
+
+      if (updateMessage) {
+
+        updateMessage.classList.add(
+          "show"
+        );
+
+      }
+
+
+      window.setTimeout(
+        () => {
+
+          window.location.reload();
+
+        },
+        500
+      );
 
     }
   );
@@ -1759,33 +2070,52 @@ if ("serviceWorker" in navigator) {
 
 document
   .querySelectorAll(".tab-btn")
-  .forEach(btn => {
+  .forEach(
+    btn => {
 
-    btn.addEventListener("click", () => {
+      btn.addEventListener(
+        "click",
+        () => {
 
-      document
-        .querySelectorAll(".tab-btn")
-        .forEach(b =>
-          b.classList.remove("active")
-        );
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach(
+              b =>
+                b.classList.remove(
+                  "active"
+                )
+            );
 
-      document
-        .querySelectorAll(".view")
-        .forEach(v =>
-          v.classList.remove("active")
-        );
 
-      btn.classList.add("active");
+          document
+            .querySelectorAll(".view")
+            .forEach(
+              v =>
+                v.classList.remove(
+                  "active"
+                )
+            );
 
-      document
-        .getElementById(
-          "view-" + btn.dataset.view
-        )
-        .classList.add("active");
 
-    });
+          btn.classList.add(
+            "active"
+          );
 
-  });
+
+          document
+            .getElementById(
+              "view-" +
+              btn.dataset.view
+            )
+            .classList.add(
+              "active"
+            );
+
+        }
+      );
+
+    }
+  );
 
 
 /* =========================================================
@@ -1798,18 +2128,27 @@ function showToast(
 ) {
 
   const toast =
-    document.getElementById("toast");
+    document.getElementById(
+      "toast"
+    );
 
-  toast.textContent = msg;
+  toast.textContent =
+    msg;
 
   toast.className =
     "toast show " + type;
 
-  setTimeout(() => {
 
-    toast.classList.remove("show");
+  setTimeout(
+    () => {
 
-  }, 2600);
+      toast.classList.remove(
+        "show"
+      );
+
+    },
+    2600
+  );
 
 }
 
@@ -1818,48 +2157,54 @@ function showToast(
    ADMIN LOGIN / STATUS
    ========================================================= */
 
-const ADMIN_PASSWORD = "TeamHerentals";
+const ADMIN_PASSWORD =
+  "TeamHerentals";
 
-let isAdmin = false;
+let isAdmin =
+  false;
 
 
 function updateAdminUI() {
 
   document
     .querySelectorAll(".admin-gate")
-    .forEach(el => {
+    .forEach(
+      el => {
 
-      el.classList.toggle(
-        "admin-only",
-        !isAdmin
-      );
+        el.classList.toggle(
+          "admin-only",
+          !isAdmin
+        );
 
-    });
+      }
+    );
 
 
   document
-    .getElementById("admin-dot")
+    .getElementById(
+      "admin-dot"
+    )
     .classList.toggle(
       "show",
       isAdmin
     );
 
 
-  /*
-     Als de gebruiker wordt uitgelogd terwijl
-     hij op het Logboek-tabblad staat, terug
-     naar Scannen schakelen.
-  */
-
   if (
     !isAdmin &&
     document
-      .getElementById("view-logboek")
-      .classList.contains("active")
+      .getElementById(
+        "view-logboek"
+      )
+      .classList.contains(
+        "active"
+      )
   ) {
 
     document
-      .querySelector('.tab-btn[data-view="scan"]')
+      .querySelector(
+        '.tab-btn[data-view="scan"]'
+      )
       .click();
 
   }
@@ -1874,19 +2219,23 @@ function checkStoredAdminSession() {
       "magazijn_admin"
     );
 
+
   const sessionOnly =
     sessionStorage.getItem(
       "magazijn_admin"
     );
+
 
   if (
     remembered === "true" ||
     sessionOnly === "true"
   ) {
 
-    isAdmin = true;
+    isAdmin =
+      true;
 
   }
+
 
   updateAdminUI();
 
@@ -1897,7 +2246,9 @@ checkStoredAdminSession();
 
 
 document
-  .getElementById("btn-admin-icon")
+  .getElementById(
+    "btn-admin-icon"
+  )
   .addEventListener(
     "click",
     () => {
@@ -1909,19 +2260,25 @@ document
             "Uitloggen als admin?"
           );
 
+
         if (confirmed) {
 
-          isAdmin = false;
+          isAdmin =
+            false;
+
 
           localStorage.removeItem(
             "magazijn_admin"
           );
 
+
           sessionStorage.removeItem(
             "magazijn_admin"
           );
 
+
           updateAdminUI();
+
 
           showToast(
             "Uitgelogd.",
@@ -1929,6 +2286,7 @@ document
           );
 
         }
+
 
         return;
 
@@ -1939,19 +2297,25 @@ document
         .getElementById(
           "admin-password"
         )
-        .value = "";
+        .value =
+        "";
+
 
       document
         .getElementById(
           "admin-remember"
         )
-        .checked = true;
+        .checked =
+        true;
+
 
       document
         .getElementById(
           "admin-login-backdrop"
         )
-        .classList.add("show");
+        .classList.add(
+          "show"
+        );
 
     }
   );
@@ -1969,7 +2333,9 @@ document
         .getElementById(
           "admin-login-backdrop"
         )
-        .classList.remove("show");
+        .classList.remove(
+          "show"
+        );
 
     }
   );
@@ -1985,7 +2351,10 @@ function attemptAdminLogin() {
       .value;
 
 
-  if (entered !== ADMIN_PASSWORD) {
+  if (
+    entered !==
+    ADMIN_PASSWORD
+  ) {
 
     showToast(
       "Onjuist wachtwoord.",
@@ -1997,7 +2366,8 @@ function attemptAdminLogin() {
   }
 
 
-  isAdmin = true;
+  isAdmin =
+    true;
 
 
   const remember =
@@ -2032,7 +2402,9 @@ function attemptAdminLogin() {
     .getElementById(
       "admin-login-backdrop"
     )
-    .classList.remove("show");
+    .classList.remove(
+      "show"
+    );
 
 
   showToast(
@@ -2044,7 +2416,9 @@ function attemptAdminLogin() {
 
 
 document
-  .getElementById("btn-admin-login")
+  .getElementById(
+    "btn-admin-login"
+  )
   .addEventListener(
     "click",
     attemptAdminLogin
@@ -2052,12 +2426,17 @@ document
 
 
 document
-  .getElementById("admin-password")
+  .getElementById(
+    "admin-password"
+  )
   .addEventListener(
     "keydown",
     event => {
 
-      if (event.key === "Enter") {
+      if (
+        event.key ===
+        "Enter"
+      ) {
 
         attemptAdminLogin();
 
@@ -2071,13 +2450,17 @@ document
    SCANNEN
    ========================================================= */
 
-let scanner = null;
+let scanner =
+  null;
 
-let currentItem = null;
+let currentItem =
+  null;
 
 
 document
-  .getElementById("btn-start-scan")
+  .getElementById(
+    "btn-start-scan"
+  )
   .addEventListener(
     "click",
     () => {
@@ -2086,7 +2469,8 @@ document
         .getElementById(
           "scan-result-card"
         )
-        .style.display = "none";
+        .style.display =
+        "none";
 
 
       if (scanner) {
@@ -2103,7 +2487,8 @@ document
       scanner.start(
 
         {
-          facingMode: "environment"
+          facingMode:
+            "environment"
         },
 
         {
@@ -2116,14 +2501,17 @@ document
         () => {}
 
       )
-      .catch(() => {
 
-        showToast(
-          "Kan camera niet starten. Controleer toestemming.",
-          "error"
-        );
+      .catch(
+        () => {
 
-      });
+          showToast(
+            "Kan camera niet starten. Controleer toestemming.",
+            "error"
+          );
+
+        }
+      );
 
     }
   );
@@ -2139,7 +2527,9 @@ async function onScanSuccess(
 
   try {
 
-    await scanner.pause(true);
+    await scanner.pause(
+      true
+    );
 
   } catch (e) {}
 
@@ -2164,10 +2554,14 @@ async function onScanSuccess(
 
 
     try {
+
       await scanner.resume();
+
     } catch (e) {}
 
+
     return;
+
   }
 
 
@@ -2176,8 +2570,12 @@ async function onScanSuccess(
 
 
   selectItem({
-    id: d.id,
+
+    id:
+      d.id,
+
     ...d.data()
+
   });
 
 
@@ -2190,18 +2588,22 @@ async function onScanSuccess(
   } catch (e) {}
 
 
-  scanner = null;
+  scanner =
+    null;
 
 }
 
 
 /* =========================================================
-   ARTIKEL SELECTEREN (VIA SCAN OF ZOEKEN)
+   ARTIKEL SELECTEREN
    ========================================================= */
 
-function selectItem(item) {
+function selectItem(
+  item
+) {
 
-  currentItem = item;
+  currentItem =
+    item;
 
 
   document
@@ -2209,7 +2611,7 @@ function selectItem(item) {
       "scan-item-name"
     )
     .textContent =
-      currentItem.name;
+    currentItem.name;
 
 
   document
@@ -2217,21 +2619,23 @@ function selectItem(item) {
       "scan-item-stock"
     )
     .textContent =
-      `Huidige voorraad: ${currentItem.currentStock} (minimum: ${currentItem.minStock})`;
+    `Huidige voorraad: ${currentItem.currentStock} (minimum: ${currentItem.minStock})`;
 
 
   document
     .getElementById(
       "scan-amount"
     )
-    .value = 1;
+    .value =
+    1;
 
 
   document
     .getElementById(
       "scan-result-card"
     )
-    .style.display = "block";
+    .style.display =
+    "block";
 
 }
 
@@ -2241,7 +2645,9 @@ function selectItem(item) {
    ========================================================= */
 
 document
-  .getElementById("btn-deduct")
+  .getElementById(
+    "btn-deduct"
+  )
   .addEventListener(
     "click",
     async () => {
@@ -2267,6 +2673,7 @@ document
         );
 
         return;
+
       }
 
 
@@ -2280,7 +2687,7 @@ document
 
         const newStock =
           await db.runTransaction(
-            async (tx) => {
+            async tx => {
 
               const snap =
                 await tx.get(
@@ -2303,15 +2710,19 @@ document
 
               const currentStock =
                 Number(
-                  data.currentStock ?? 0
+                  data.currentStock ??
+                  0
                 );
 
 
               const updated =
-                currentStock - amount;
+                currentStock -
+                amount;
 
 
-              if (updated < 0) {
+              if (
+                updated < 0
+              ) {
 
                 throw new Error(
                   "Onvoldoende voorraad."
@@ -2353,7 +2764,8 @@ document
             "deduction",
 
           timestamp:
-            firebase.firestore.FieldValue.serverTimestamp()
+            firebase.firestore.FieldValue
+              .serverTimestamp()
 
         });
 
@@ -2382,10 +2794,12 @@ document
           .getElementById(
             "scan-result-card"
           )
-          .style.display = "none";
+          .style.display =
+          "none";
 
 
-        currentItem = null;
+        currentItem =
+          null;
 
       } catch (err) {
 
@@ -2405,7 +2819,9 @@ document
    ========================================================= */
 
 document
-  .getElementById("btn-add-stock")
+  .getElementById(
+    "btn-add-stock"
+  )
   .addEventListener(
     "click",
     async () => {
@@ -2431,6 +2847,7 @@ document
         );
 
         return;
+
       }
 
 
@@ -2444,7 +2861,7 @@ document
 
         const newStock =
           await db.runTransaction(
-            async (tx) => {
+            async tx => {
 
               const snap =
                 await tx.get(
@@ -2467,12 +2884,14 @@ document
 
               const currentStock =
                 Number(
-                  data.currentStock ?? 0
+                  data.currentStock ??
+                  0
                 );
 
 
               const updated =
-                currentStock + amount;
+                currentStock +
+                amount;
 
 
               tx.update(
@@ -2511,7 +2930,8 @@ document
             "levering",
 
           timestamp:
-            firebase.firestore.FieldValue.serverTimestamp()
+            firebase.firestore.FieldValue
+              .serverTimestamp()
 
         });
 
@@ -2526,10 +2946,12 @@ document
           .getElementById(
             "scan-result-card"
           )
-          .style.display = "none";
+          .style.display =
+          "none";
 
 
-        currentItem = null;
+        currentItem =
+          null;
 
       } catch (err) {
 
@@ -2546,43 +2968,63 @@ document
 
 
 /* =========================================================
-   VOORRAAD OVERZICHT (+ LOKALE CACHE VOOR ZOEKEN)
+   VOORRAAD OVERZICHT
    ========================================================= */
 
-let allItems = [];
+let allItems =
+  [];
 
 
 itemsRef.onSnapshot(
+
   snap => {
 
     const items =
       snap.docs.map(
         d => ({
-          id: d.id,
+
+          id:
+            d.id,
+
           ...d.data()
+
         })
       );
 
 
-    allItems = items;
+    allItems =
+      items;
 
 
     items.sort(
       (a, b) => {
 
         const aLow =
-          Number(a.currentStock ?? 0) <
-          Number(a.minStock ?? 0);
+          Number(
+            a.currentStock ?? 0
+          ) <
+          Number(
+            a.minStock ?? 0
+          );
 
 
         const bLow =
-          Number(b.currentStock ?? 0) <
-          Number(b.minStock ?? 0);
+          Number(
+            b.currentStock ?? 0
+          ) <
+          Number(
+            b.minStock ?? 0
+          );
 
 
-        if (aLow !== bLow) {
+        if (
+          aLow !==
+          bLow
+        ) {
 
-          return aLow ? -1 : 1;
+          return aLow
+            ? -1
+            : 1;
 
         }
 
@@ -2595,9 +3037,13 @@ itemsRef.onSnapshot(
     );
 
 
-    renderList(items);
+    renderList(
+      items
+    );
 
-    renderTellingList(items);
+    renderTellingList(
+      items
+    );
 
   },
 
@@ -2614,6 +3060,7 @@ itemsRef.onSnapshot(
     );
 
   }
+
 );
 
 
@@ -2633,7 +3080,9 @@ const suggestionsBox =
   );
 
 
-function escapeRegExp(str) {
+function escapeRegExp(
+  str
+) {
 
   return str.replace(
     /[.*+?^${}()|[\]\\]/g,
@@ -2649,7 +3098,10 @@ function highlightMatch(
 ) {
 
   const safeQuery =
-    escapeRegExp(query);
+    escapeRegExp(
+      query
+    );
+
 
   const re =
     new RegExp(
@@ -2657,9 +3109,13 @@ function highlightMatch(
       "ig"
     );
 
-  return escapeHtml(name).replace(
+
+  return escapeHtml(
+    name
+  ).replace(
     re,
-    match => `<mark>${match}</mark>`
+    match =>
+      `<mark>${match}</mark>`
   );
 
 }
@@ -2670,17 +3126,20 @@ searchInput.addEventListener(
   () => {
 
     const query =
-      searchInput.value
-        .trim();
+      searchInput.value.trim();
 
 
-    if (query.length < 3) {
+    if (
+      query.length <
+      3
+    ) {
 
       suggestionsBox.classList.remove(
         "show"
       );
 
-      suggestionsBox.innerHTML = "";
+      suggestionsBox.innerHTML =
+        "";
 
       return;
 
@@ -2693,20 +3152,32 @@ searchInput.addEventListener(
 
     const matches =
       allItems
-        .filter(item =>
-          (item.name || "")
-            .toLowerCase()
-            .includes(lowerQuery)
+        .filter(
+          item =>
+            (item.name || "")
+              .toLowerCase()
+              .includes(
+                lowerQuery
+              )
         )
-        .slice(0, 8);
+        .slice(
+          0,
+          8
+        );
 
 
-    if (matches.length === 0) {
+    if (
+      matches.length ===
+      0
+    ) {
 
       suggestionsBox.innerHTML =
         `<div class="search-suggestion">
-          <span class="s-stock">Geen artikelen gevonden.</span>
+          <span class="s-stock">
+            Geen artikelen gevonden.
+          </span>
         </div>`;
+
 
       suggestionsBox.classList.add(
         "show"
@@ -2717,69 +3188,98 @@ searchInput.addEventListener(
     }
 
 
-    suggestionsBox.innerHTML = "";
+    suggestionsBox.innerHTML =
+      "";
 
 
-    matches.forEach(item => {
+    matches.forEach(
+      item => {
 
-      const currentStock =
-        Number(
-          item.currentStock ?? 0
-        );
-
-      const minStock =
-        Number(
-          item.minStock ?? 0
-        );
-
-      const low =
-        currentStock < minStock;
-
-
-      const row =
-        document.createElement(
-          "div"
-        );
-
-      row.className =
-        "search-suggestion";
-
-      row.innerHTML = `
-
-        <div class="s-name">
-          ${highlightMatch(item.name, query)}
-        </div>
-
-        <div class="s-stock" ${low ? 'style="color:var(--danger);font-weight:700;"' : ""}>
-          ${currentStock} ${low ? "(laag)" : ""}
-        </div>
-
-      `;
-
-
-      row.addEventListener(
-        "click",
-        () => {
-
-          selectItem(item);
-
-          suggestionsBox.classList.remove(
-            "show"
+        const currentStock =
+          Number(
+            item.currentStock ??
+            0
           );
 
-          suggestionsBox.innerHTML = "";
 
-          searchInput.value = "";
+        const minStock =
+          Number(
+            item.minStock ??
+            0
+          );
 
-        }
-      );
+
+        const low =
+          currentStock <
+          minStock;
 
 
-      suggestionsBox.appendChild(
-        row
-      );
+        const row =
+          document.createElement(
+            "div"
+          );
 
-    });
+
+        row.className =
+          "search-suggestion";
+
+
+        row.innerHTML = `
+
+          <div class="s-name">
+            ${highlightMatch(
+              item.name,
+              query
+            )}
+          </div>
+
+          <div
+            class="s-stock"
+            ${
+              low
+                ? 'style="color:var(--danger);font-weight:700;"'
+                : ""
+            }>
+
+            ${currentStock}
+            ${low ? "(laag)" : ""}
+
+          </div>
+
+        `;
+
+
+        row.addEventListener(
+          "click",
+          () => {
+
+            selectItem(
+              item
+            );
+
+
+            suggestionsBox.classList.remove(
+              "show"
+            );
+
+
+            suggestionsBox.innerHTML =
+              "";
+
+
+            searchInput.value =
+              "";
+
+          }
+        );
+
+
+        suggestionsBox.appendChild(
+          row
+        );
+
+      }
+    );
 
 
     suggestionsBox.classList.add(
@@ -2790,11 +3290,6 @@ searchInput.addEventListener(
 );
 
 
-/*
-   Suggesties sluiten wanneer er
-   ergens anders getikt wordt.
-*/
-
 document.addEventListener(
   "click",
   event => {
@@ -2804,7 +3299,12 @@ document.addEventListener(
         ".search-wrap"
       );
 
-    if (!wrap.contains(event.target)) {
+
+    if (
+      !wrap.contains(
+        event.target
+      )
+    ) {
 
       suggestionsBox.classList.remove(
         "show"
@@ -2820,7 +3320,9 @@ document.addEventListener(
    VOORRAAD RENDEREN
    ========================================================= */
 
-function renderList(items) {
+function renderList(
+  items
+) {
 
   const list =
     document.getElementById(
@@ -2828,7 +3330,10 @@ function renderList(items) {
     );
 
 
-  if (items.length === 0) {
+  if (
+    items.length ===
+    0
+  ) {
 
     list.innerHTML =
       `<div class="empty">
@@ -2841,77 +3346,93 @@ function renderList(items) {
   }
 
 
-  list.innerHTML = "";
+  list.innerHTML =
+    "";
 
 
-  items.forEach(item => {
+  items.forEach(
+    item => {
 
-    const currentStock =
-      Number(
-        item.currentStock ?? 0
-      );
-
-
-    const minStock =
-      Number(
-        item.minStock ?? 0
-      );
+      const currentStock =
+        Number(
+          item.currentStock ??
+          0
+        );
 
 
-    const low =
-      currentStock < minStock;
+      const minStock =
+        Number(
+          item.minStock ??
+          0
+        );
 
 
-    const row =
-      document.createElement(
-        "div"
-      );
+      const low =
+        currentStock <
+        minStock;
 
 
-    row.className =
-      "item-row" +
-      (low ? " low" : "");
+      const row =
+        document.createElement(
+          "div"
+        );
 
 
-    row.innerHTML = `
+      row.className =
+        "item-row" +
+        (
+          low
+            ? " low"
+            : ""
+        );
 
-      <div>
 
-        <div class="name">
+      row.innerHTML = `
 
-          ${escapeHtml(item.name)}
+        <div>
 
-          ${
-            low
-              ? '<span class="badge">LAAG</span>'
-              : ""
-          }
+          <div class="name">
+
+            ${escapeHtml(
+              item.name
+            )}
+
+            ${
+              low
+                ? '<span class="badge">LAAG</span>'
+                : ""
+            }
+
+          </div>
+
+          <div class="sub">
+            min. ${minStock}
+          </div>
 
         </div>
 
-        <div class="sub">
-          min. ${minStock}
+        <div class="qty">
+          ${currentStock}
         </div>
 
-      </div>
+      `;
 
 
-      <div class="qty">
-        ${currentStock}
-      </div>
-
-    `;
-
-
-    row.addEventListener(
-      "click",
-      () => openItemModal(item)
-    );
+      row.addEventListener(
+        "click",
+        () =>
+          openItemModal(
+            item
+          )
+      );
 
 
-    list.appendChild(row);
+      list.appendChild(
+        row
+      );
 
-  });
+    }
+  );
 
 }
 
@@ -2920,15 +3441,21 @@ function renderList(items) {
    HTML VEILIG MAKEN
    ========================================================= */
 
-function escapeHtml(str) {
+function escapeHtml(
+  str
+) {
 
   const div =
     document.createElement(
       "div"
     );
 
+
   div.textContent =
-    String(str ?? "");
+    String(
+      str ?? ""
+    );
+
 
   return div.innerHTML;
 
@@ -2939,38 +3466,45 @@ function escapeHtml(str) {
    STOCKTELLING RENDEREN
    ========================================================= */
 
-function renderTellingList(items) {
+function renderTellingList(
+  items
+) {
 
   const list =
     document.getElementById(
       "telling-list"
     );
 
+
   if (!list) {
     return;
   }
 
 
-  /*
-     Reeds ingevulde telwaarden bewaren zodat
-     ze niet verloren gaan bij een live-update
-     vanuit Firestore terwijl iemand aan het
-     tellen is.
-  */
+  const previousValues =
+    {};
 
-  const previousValues = {};
 
   list
-    .querySelectorAll("input[data-id]")
-    .forEach(input => {
+    .querySelectorAll(
+      "input[data-id]"
+    )
+    .forEach(
+      input => {
 
-      previousValues[input.dataset.id] =
-        input.value;
+        previousValues[
+          input.dataset.id
+        ] =
+          input.value;
 
-    });
+      }
+    );
 
 
-  if (items.length === 0) {
+  if (
+    items.length ===
+    0
+  ) {
 
     list.innerHTML =
       `<div class="empty">
@@ -2985,89 +3519,117 @@ function renderTellingList(items) {
   const sorted =
     [...items].sort(
       (a, b) =>
-        a.name.localeCompare(b.name)
+        a.name.localeCompare(
+          b.name
+        )
     );
 
 
-  list.innerHTML = "";
+  list.innerHTML =
+    "";
 
 
-  sorted.forEach(item => {
+  sorted.forEach(
+    item => {
 
-    const currentStock =
-      Number(
-        item.currentStock ?? 0
-      );
-
-
-    const row =
-      document.createElement(
-        "div"
-      );
-
-    row.className =
-      "telling-row";
+      const currentStock =
+        Number(
+          item.currentStock ??
+          0
+        );
 
 
-    row.innerHTML = `
+      const row =
+        document.createElement(
+          "div"
+        );
 
-      <div class="t-info">
-        <div class="t-name">
-          ${escapeHtml(item.name)}
+
+      row.className =
+        "telling-row";
+
+
+      row.innerHTML = `
+
+        <div class="t-info">
+
+          <div class="t-name">
+            ${escapeHtml(
+              item.name
+            )}
+          </div>
+
+          <div class="t-current">
+            huidig: ${currentStock}
+          </div>
+
         </div>
-        <div class="t-current">
-          huidig: ${currentStock}
-        </div>
-      </div>
 
-      <input
-        type="number"
-        min="0"
-        inputmode="numeric"
-        data-id="${escapeHtml(item.id)}"
-        data-current="${currentStock}"
-        value="${
-          previousValues[item.id] !== undefined
-            ? escapeHtml(previousValues[item.id])
-            : currentStock
-        }">
+        <input
+          type="number"
+          min="0"
+          inputmode="numeric"
+          data-id="${escapeHtml(item.id)}"
+          data-current="${currentStock}"
+          value="${
+            previousValues[
+              item.id
+            ] !== undefined
+              ? escapeHtml(
+                  previousValues[
+                    item.id
+                  ]
+                )
+              : currentStock
+          }">
 
-    `;
-
-
-    const input =
-      row.querySelector("input");
+      `;
 
 
-    const markIfChanged = () => {
+      const input =
+        row.querySelector(
+          "input"
+        );
 
-      const val =
-        parseInt(input.value, 10);
 
-      const changed =
-        !isNaN(val) &&
-        val !== currentStock;
+      const markIfChanged =
+        () => {
 
-      row.classList.toggle(
-        "changed",
-        changed
+          const val =
+            parseInt(
+              input.value,
+              10
+            );
+
+
+          const changed =
+            !isNaN(val) &&
+            val !== currentStock;
+
+
+          row.classList.toggle(
+            "changed",
+            changed
+          );
+
+        };
+
+
+      input.addEventListener(
+        "input",
+        markIfChanged
       );
 
-    };
+
+      markIfChanged();
 
 
-    input.addEventListener(
-      "input",
-      markIfChanged
-    );
+      list.appendChild(
+        row
+      );
 
-
-    markIfChanged();
-
-
-    list.appendChild(row);
-
-  });
+    }
+  );
 
 }
 
@@ -3077,7 +3639,9 @@ function renderTellingList(items) {
    ========================================================= */
 
 document
-  .getElementById("btn-save-telling")
+  .getElementById(
+    "btn-save-telling"
+  )
   .addEventListener(
     "click",
     async () => {
@@ -3092,35 +3656,51 @@ document
 
       const changes =
         inputs
-          .map(input => {
+          .map(
+            input => {
 
-            const counted =
-              parseInt(
-                input.value,
-                10
-              );
+              const counted =
+                parseInt(
+                  input.value,
+                  10
+                );
 
-            const current =
-              parseInt(
-                input.dataset.current,
-                10
-              );
 
-            return {
-              id: input.dataset.id,
-              counted,
-              current
-            };
+              const current =
+                parseInt(
+                  input.dataset.current,
+                  10
+                );
 
-          })
-          .filter(c =>
-            !isNaN(c.counted) &&
-            c.counted >= 0 &&
-            c.counted !== c.current
+
+              return {
+
+                id:
+                  input.dataset.id,
+
+                counted,
+
+                current
+
+              };
+
+            }
+          )
+          .filter(
+            c =>
+              !isNaN(
+                c.counted
+              ) &&
+              c.counted >= 0 &&
+              c.counted !==
+                c.current
           );
 
 
-      if (changes.length === 0) {
+      if (
+        changes.length ===
+        0
+      ) {
 
         showToast(
           "Geen wijzigingen om op te slaan.",
@@ -3149,63 +3729,70 @@ document
           db.batch();
 
 
-        changes.forEach(change => {
+        changes.forEach(
+          change => {
 
-          const itemDocRef =
-            itemsRef.doc(change.id);
-
-
-          batch.update(
-            itemDocRef,
-            {
-              currentStock:
-                change.counted
-            }
-          );
+            const itemDocRef =
+              itemsRef.doc(
+                change.id
+              );
 
 
-          const itemInfo =
-            allItems.find(
-              i => i.id === change.id
+            batch.update(
+              itemDocRef,
+              {
+                currentStock:
+                  change.counted
+              }
             );
 
 
-          const movementRef =
-            movementsRef.doc();
+            const itemInfo =
+              allItems.find(
+                i =>
+                  i.id ===
+                  change.id
+              );
 
 
-          batch.set(
-            movementRef,
-            {
+            const movementRef =
+              movementsRef.doc();
 
-              itemId:
-                change.id,
 
-              itemName:
-                itemInfo
-                  ? itemInfo.name
-                  : "",
+            batch.set(
+              movementRef,
+              {
 
-              amount:
-                change.counted -
-                change.current,
+                itemId:
+                  change.id,
 
-              resultingStock:
-                change.counted,
+                itemName:
+                  itemInfo
+                    ? itemInfo.name
+                    : "",
 
-              type:
-                "count",
+                amount:
+                  change.counted -
+                  change.current,
 
-              reason:
-                "stocktelling",
+                resultingStock:
+                  change.counted,
 
-              timestamp:
-                firebase.firestore.FieldValue.serverTimestamp()
+                type:
+                  "count",
 
-            }
-          );
+                reason:
+                  "stocktelling",
 
-        });
+                timestamp:
+                  firebase.firestore.FieldValue
+                    .serverTimestamp()
+
+              }
+            );
+
+          }
+        );
 
 
         await batch.commit();
@@ -3234,26 +3821,36 @@ document
    ARTIKEL TOEVOEGEN / BEWERKEN
    ========================================================= */
 
-let editingItemId = null;
+let editingItemId =
+  null;
 
 
 document
-  .getElementById("btn-add-item")
+  .getElementById(
+    "btn-add-item"
+  )
   .addEventListener(
     "click",
-    () => openItemModal(null)
+    () =>
+      openItemModal(
+        null
+      )
   );
 
 
 document
-  .getElementById("btn-cancel-item")
+  .getElementById(
+    "btn-cancel-item"
+  )
   .addEventListener(
     "click",
     closeItemModal
   );
 
 
-function openItemModal(item) {
+function openItemModal(
+  item
+) {
 
   editingItemId =
     item
@@ -3266,9 +3863,9 @@ function openItemModal(item) {
       "modal-title"
     )
     .textContent =
-      item
-        ? "Artikel bewerken"
-        : "Nieuw artikel";
+    item
+      ? "Artikel bewerken"
+      : "Nieuw artikel";
 
 
   document
@@ -3276,9 +3873,9 @@ function openItemModal(item) {
       "f-name"
     )
     .value =
-      item
-        ? item.name
-        : "";
+    item
+      ? item.name
+      : "";
 
 
   document
@@ -3286,9 +3883,9 @@ function openItemModal(item) {
       "f-qr"
     )
     .value =
-      item
-        ? item.qrCode
-        : "";
+    item
+      ? item.qrCode
+      : "";
 
 
   document
@@ -3296,9 +3893,9 @@ function openItemModal(item) {
       "f-stock"
     )
     .value =
-      item
-        ? item.currentStock
-        : 0;
+    item
+      ? item.currentStock
+      : 0;
 
 
   document
@@ -3306,9 +3903,9 @@ function openItemModal(item) {
       "f-min"
     )
     .value =
-      item
-        ? item.minStock
-        : 0;
+    item
+      ? item.minStock
+      : 0;
 
 
   const qrPrint =
@@ -3317,7 +3914,8 @@ function openItemModal(item) {
     );
 
 
-  qrPrint.innerHTML = "";
+  qrPrint.innerHTML =
+    "";
 
 
   if (
@@ -3351,7 +3949,9 @@ function openItemModal(item) {
     .getElementById(
       "item-modal"
     )
-    .classList.add("show");
+    .classList.add(
+      "show"
+    );
 
 }
 
@@ -3362,7 +3962,9 @@ function closeItemModal() {
     .getElementById(
       "item-modal"
     )
-    .classList.remove("show");
+    .classList.remove(
+      "show"
+    );
 
 }
 
@@ -3372,7 +3974,9 @@ function closeItemModal() {
    ========================================================= */
 
 document
-  .getElementById("btn-save-item")
+  .getElementById(
+    "btn-save-item"
+  )
   .addEventListener(
     "click",
     async () => {
@@ -3435,8 +4039,11 @@ document
       const data = {
 
         name,
+
         qrCode,
+
         currentStock,
+
         minStock
 
       };
@@ -3444,15 +4051,23 @@ document
 
       try {
 
-        if (editingItemId) {
+        if (
+          editingItemId
+        ) {
 
           await itemsRef
-            .doc(editingItemId)
-            .update(data);
+            .doc(
+              editingItemId
+            )
+            .update(
+              data
+            );
 
         } else {
 
-          await itemsRef.add(data);
+          await itemsRef.add(
+            data
+          );
 
         }
 
@@ -3484,7 +4099,9 @@ document
    ========================================================= */
 
 document
-  .getElementById("btn-save-varia")
+  .getElementById(
+    "btn-save-varia"
+  )
   .addEventListener(
     "click",
     async () => {
@@ -3517,7 +4134,8 @@ document
           text,
 
           timestamp:
-            firebase.firestore.FieldValue.serverTimestamp()
+            firebase.firestore.FieldValue
+              .serverTimestamp()
 
         });
 
@@ -3526,7 +4144,8 @@ document
           .getElementById(
             "varia-text"
           )
-          .value = "";
+          .value =
+          "";
 
 
         showToast(
@@ -3567,7 +4186,9 @@ variaRef
         );
 
 
-      if (snap.empty) {
+      if (
+        snap.empty
+      ) {
 
         list.innerHTML =
           `<div class="empty">
@@ -3579,7 +4200,8 @@ variaRef
       }
 
 
-      list.innerHTML = "";
+      list.innerHTML =
+        "";
 
 
       snap.docs.forEach(
@@ -3621,17 +4243,24 @@ variaRef
           item.innerHTML = `
 
             <div class="varia-item-text">
-              ${escapeHtml(data.text)}
+              ${escapeHtml(
+                data.text
+              )}
             </div>
 
             <div class="varia-item-date">
-              Toegevoegd: ${escapeHtml(dateText)}
+              Toegevoegd:
+              ${escapeHtml(
+                dateText
+              )}
             </div>
 
             <button
               class="varia-delete"
               data-id="${escapeHtml(doc.id)}">
+
               Verwijderen
+
             </button>
 
           `;
@@ -3643,11 +4272,16 @@ variaRef
             )
             .addEventListener(
               "click",
-              () => deleteVaria(doc.id)
+              () =>
+                deleteVaria(
+                  doc.id
+                )
             );
 
 
-          list.appendChild(item);
+          list.appendChild(
+            item
+          );
 
         }
       );
@@ -3661,11 +4295,6 @@ variaRef
         error
       );
 
-      /*
-         Als Firestore nog geen index heeft voor
-         timestamp, proberen we de collectie zonder
-         orderBy te laden.
-      */
 
       loadVariaWithoutOrdering();
 
@@ -3691,10 +4320,13 @@ function loadVariaWithoutOrdering() {
           );
 
 
-        list.innerHTML = "";
+        list.innerHTML =
+          "";
 
 
-        if (snap.empty) {
+        if (
+          snap.empty
+        ) {
 
           list.innerHTML =
             `<div class="empty">
@@ -3726,13 +4358,17 @@ function loadVariaWithoutOrdering() {
             item.innerHTML = `
 
               <div class="varia-item-text">
-                ${escapeHtml(data.text)}
+                ${escapeHtml(
+                  data.text
+                )}
               </div>
 
               <button
                 class="varia-delete"
                 data-id="${escapeHtml(doc.id)}">
+
                 Verwijderen
+
               </button>
 
             `;
@@ -3745,11 +4381,15 @@ function loadVariaWithoutOrdering() {
               .addEventListener(
                 "click",
                 () =>
-                  deleteVaria(doc.id)
+                  deleteVaria(
+                    doc.id
+                  )
               );
 
 
-            list.appendChild(item);
+            list.appendChild(
+              item
+            );
 
           }
         );
@@ -3791,7 +4431,9 @@ async function deleteVaria(
   try {
 
     await variaRef
-      .doc(id)
+      .doc(
+        id
+      )
       .delete();
 
 
@@ -3814,10 +4456,12 @@ async function deleteVaria(
 
 
 /* =========================================================
-   LOGBOEK (ENKEL ADMIN)
+   LOGBOEK
    ========================================================= */
 
-function formatLogDate(timestamp) {
+function formatLogDate(
+  timestamp
+) {
 
   if (
     timestamp &&
@@ -3826,28 +4470,57 @@ function formatLogDate(timestamp) {
 
     return timestamp
       .toDate()
-      .toLocaleString("nl-BE");
+      .toLocaleString(
+        "nl-BE"
+      );
 
   }
+
 
   return "Datum onbekend";
 
 }
 
 
-function logTypeLabel(type) {
+function logTypeLabel(
+  type
+) {
 
-  if (type === "deduction") return "Afboeking";
-  if (type === "addition") return "Bijboeking";
-  if (type === "count") return "Telling";
+  if (
+    type ===
+    "deduction"
+  ) {
+    return "Afboeking";
+  }
+
+  if (
+    type ===
+    "addition"
+  ) {
+    return "Bijboeking";
+  }
+
+  if (
+    type ===
+    "count"
+  ) {
+    return "Telling";
+  }
+
+
   return type || "";
 
 }
 
 
 movementsRef
-  .orderBy("timestamp", "desc")
-  .limit(100)
+  .orderBy(
+    "timestamp",
+    "desc"
+  )
+  .limit(
+    100
+  )
   .onSnapshot(
 
     snap => {
@@ -3857,12 +4530,15 @@ movementsRef
           "logboek-list"
         );
 
+
       if (!list) {
         return;
       }
 
 
-      if (snap.empty) {
+      if (
+        snap.empty
+      ) {
 
         list.innerHTML =
           `<div class="empty">
@@ -3874,64 +4550,116 @@ movementsRef
       }
 
 
-      list.innerHTML = "";
+      list.innerHTML =
+        "";
 
 
-      snap.docs.forEach(doc => {
+      snap.docs.forEach(
+        doc => {
 
-        const data =
-          doc.data();
+          const data =
+            doc.data();
 
-        const amount =
-          Number(data.amount ?? 0);
 
-        const amountClass =
-          amount > 0
-            ? "positive"
-            : amount < 0
-              ? "negative"
-              : "neutral";
+          const amount =
+            Number(
+              data.amount ??
+              0
+            );
 
-        const amountText =
-          amount > 0
-            ? `+${amount}`
-            : `${amount}`;
 
-        const row =
-          document.createElement(
-            "div"
+          const amountClass =
+            amount > 0
+              ? "positive"
+              : amount < 0
+                ? "negative"
+                : "neutral";
+
+
+          const amountText =
+            amount > 0
+              ? `+${amount}`
+              : `${amount}`;
+
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+
+          row.className =
+            "log-item";
+
+
+          row.innerHTML = `
+
+            <div>
+
+              <div class="log-name">
+
+                ${escapeHtml(
+                  data.itemName ||
+                  "Onbekend artikel"
+                )}
+
+                <span
+                  class="log-type-badge ${escapeHtml(
+                    data.type || ""
+                  )}">
+
+                  ${escapeHtml(
+                    logTypeLabel(
+                      data.type
+                    )
+                  )}
+
+                </span>
+
+              </div>
+
+              <div class="log-meta">
+
+                ${escapeHtml(
+                  formatLogDate(
+                    data.timestamp
+                  )
+                )}
+
+                ${
+                  data.resultingStock !==
+                  undefined
+
+                    ? ` &middot; nieuwe voorraad: ${escapeHtml(
+                        String(
+                          data.resultingStock
+                        )
+                      )}`
+
+                    : ""
+                }
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="log-amount ${amountClass}">
+
+              ${amountText}
+
+            </div>
+
+          `;
+
+
+          list.appendChild(
+            row
           );
 
-        row.className = "log-item";
-
-        row.innerHTML = `
-
-          <div>
-            <div class="log-name">
-              ${escapeHtml(data.itemName || "Onbekend artikel")}
-              <span class="log-type-badge ${escapeHtml(data.type || "")}">
-                ${escapeHtml(logTypeLabel(data.type))}
-              </span>
-            </div>
-            <div class="log-meta">
-              ${escapeHtml(formatLogDate(data.timestamp))}
-              ${
-                data.resultingStock !== undefined
-                  ? ` &middot; nieuwe voorraad: ${escapeHtml(String(data.resultingStock))}`
-                  : ""
-              }
-            </div>
-          </div>
-
-          <div class="log-amount ${amountClass}">
-            ${amountText}
-          </div>
-
-        `;
-
-        list.appendChild(row);
-
-      });
+        }
+      );
 
     },
 
@@ -3951,7 +4679,8 @@ movementsRef
    PWA INSTALLATIE
    ========================================================= */
 
-let deferredInstallPrompt = null;
+let deferredInstallPrompt =
+  null;
 
 
 const installBackdrop =
@@ -3960,33 +4689,19 @@ const installBackdrop =
   );
 
 
-/*
-   Detecteer iPhone/iPad/iPod.
-*/
-
 const isIOS =
   /iphone|ipad|ipod/i.test(
     navigator.userAgent
   );
 
 
-/*
-   Controleer of de app reeds als PWA
-   geïnstalleerd / standalone draait.
-*/
-
 const isStandalone =
   window.matchMedia(
     "(display-mode: standalone)"
   ).matches ||
-  window.navigator.standalone === true;
+  window.navigator.standalone ===
+    true;
 
-
-/*
-   Android / Chrome / Edge enz.
-   geven dit event wanneer de app
-   daadwerkelijk installeerbaar is.
-*/
 
 window.addEventListener(
   "beforeinstallprompt",
@@ -3994,15 +4709,10 @@ window.addEventListener(
 
     event.preventDefault();
 
+
     deferredInstallPrompt =
       event;
 
-
-    /*
-       We wachten even zodat de popup
-       niet onmiddellijk bij het laden
-       van de website in beeld springt.
-    */
 
     setTimeout(
       showInstallPopup,
@@ -4019,19 +4729,12 @@ window.addEventListener(
 
 function showInstallPopup() {
 
-  /*
-     Niet tonen wanneer de app al geïnstalleerd is.
-  */
-
-  if (isStandalone) {
+  if (
+    isStandalone
+  ) {
     return;
   }
 
-
-  /*
-     Niet opnieuw tonen als de gebruiker
-     onlangs "misschien later" koos.
-  */
 
   const dismissed =
     localStorage.getItem(
@@ -4048,16 +4751,17 @@ function showInstallPopup() {
       );
 
 
-    /*
-       Na 7 dagen opnieuw vragen.
-    */
-
     const sevenDays =
-      7 * 24 * 60 * 60 * 1000;
+      7 *
+      24 *
+      60 *
+      60 *
+      1000;
 
 
     if (
-      Date.now() - dismissedAt <
+      Date.now() -
+      dismissedAt <
       sevenDays
     ) {
 
@@ -4080,10 +4784,6 @@ function showInstallPopup() {
     );
 
 
-  /*
-     iOS
-  */
-
   if (isIOS) {
 
     androidContent.style.display =
@@ -4094,27 +4794,11 @@ function showInstallPopup() {
 
   }
 
-  /*
-     Android / andere browsers
-  */
-
   else {
 
-    /*
-       Alleen echte installatieknop tonen
-       wanneer de browser de PWA-installatie
-       ondersteunt.
-    */
-
-    if (!deferredInstallPrompt) {
-
-      /*
-         Op sommige browsers kan de app wel
-         installeerbaar zijn, maar wordt het
-         event nog niet gegeven.
-
-         In dat geval geen valse knop tonen.
-      */
+    if (
+      !deferredInstallPrompt
+    ) {
 
       return;
 
@@ -4149,10 +4833,10 @@ document
     "click",
     async () => {
 
-      if (!deferredInstallPrompt) {
-
+      if (
+        !deferredInstallPrompt
+      ) {
         return;
-
       }
 
 
@@ -4160,7 +4844,8 @@ document
 
 
       const result =
-        await deferredInstallPrompt.userChoice;
+        await deferredInstallPrompt
+          .userChoice;
 
 
       if (
@@ -4177,7 +4862,9 @@ document
       }
 
 
-      deferredInstallPrompt = null;
+      deferredInstallPrompt =
+        null;
+
 
       closeInstallPopup();
 
@@ -4201,6 +4888,7 @@ document
         "magazijn_install_dismissed",
         Date.now().toString()
       );
+
 
       closeInstallPopup();
 
@@ -4228,7 +4916,9 @@ window.addEventListener(
     deferredInstallPrompt =
       null;
 
+
     closeInstallPopup();
+
 
     showToast(
       "Magazijn is geïnstalleerd.",
