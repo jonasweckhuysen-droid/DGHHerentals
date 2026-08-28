@@ -1,4 +1,4 @@
-const CACHE_NAME = "magazijn-cache-v2";
+const CACHE_NAME = "magazijn-cache-v3";
 
 const APP_SHELL = [
   "./",
@@ -10,18 +10,124 @@ const APP_SHELL = [
 
 
 /* =========================================================
+   FIREBASE CLOUD MESSAGING
+   =========================================================
+
+   Firebase wordt ook in de service worker geladen zodat
+   pushmeldingen kunnen worden ontvangen wanneer de app
+   niet geopend is.
+   ========================================================= */
+
+importScripts(
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"
+);
+
+importScripts(
+  "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"
+);
+
+
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
+
+firebase.initializeApp({
+  apiKey: "AIzaSyBHao9v3GvW-IONs-R2TVDt-vGxMc4fxKE",
+  authDomain: "dghmagazijn-d38bf.firebaseapp.com",
+  projectId: "dghmagazijn-d38bf",
+  storageBucket: "dghmagazijn-d38bf.firebasestorage.app",
+  messagingSenderId: "725175536466",
+  appId: "1:725175536466:web:6da1c46b81b5dcb0e8888b"
+});
+
+
+/* =========================================================
+   FIREBASE MESSAGING
+   ========================================================= */
+
+const messaging = firebase.messaging();
+
+
+/* =========================================================
+   PUSHMELDINGEN OP DE ACHTERGROND
+   =========================================================
+
+   Dit wordt uitgevoerd wanneer de app niet actief/open is
+   en Firebase een pushmelding ontvangt.
+   ========================================================= */
+
+messaging.onBackgroundMessage((payload) => {
+
+  console.log(
+    "[Magazijn] Achtergrondmelding ontvangen:",
+    payload
+  );
+
+
+  const notificationTitle =
+    payload.notification?.title ||
+    payload.data?.title ||
+    "Magazijn Ziekenwagen";
+
+
+  const notificationOptions = {
+
+    body:
+      payload.notification?.body ||
+      payload.data?.body ||
+      "Er is een wijziging in het magazijn.",
+
+    icon:
+      payload.notification?.icon ||
+      "./icon-192.png",
+
+    badge:
+      "./icon-192.png",
+
+    data: {
+      url:
+        payload.data?.url ||
+        "./"
+    },
+
+    tag:
+      payload.data?.tag ||
+      "magazijn-melding",
+
+    renotify: true
+
+  };
+
+
+  return self.registration.showNotification(
+    notificationTitle,
+    notificationOptions
+  );
+
+});
+
+
+/* =========================================================
    INSTALL
    ========================================================= */
 
 self.addEventListener("install", (event) => {
 
   event.waitUntil(
+
     caches.open(CACHE_NAME).then((cache) => {
+
       return cache.addAll(APP_SHELL);
+
     })
+
   );
 
-  // Nieuwe versie niet laten wachten op de oude service worker
+
+  /*
+     Nieuwe service worker onmiddellijk activeren.
+  */
+
   self.skipWaiting();
 
 });
@@ -49,8 +155,12 @@ self.addEventListener("activate", (event) => {
 
   );
 
-  // Nieuwe service worker neemt onmiddellijk controle over
-  // de reeds geopende/geïnstalleerde app
+
+  /*
+     Nieuwe service worker neemt onmiddellijk controle
+     over reeds geopende/geïnstalleerde apps.
+  */
+
   self.clients.claim();
 
 });
@@ -65,16 +175,18 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
+
   /*
-     Alleen requests naar onze eigen website
-     behandelen met de service worker.
+     Alleen requests naar onze eigen website behandelen.
      
-     Firebase, Google, QR-scanner, CDN's enz.
-     blijven rechtstreeks naar het internet gaan.
+     Firebase, Google, Firebase Messaging, QR-scanner,
+     QR-generator en andere CDN's gaan rechtstreeks
+     naar het internet.
   */
 
   const isAppShell =
     url.origin === self.location.origin;
+
 
   if (!isAppShell) {
     return;
@@ -82,7 +194,7 @@ self.addEventListener("fetch", (event) => {
 
 
   /*
-     We behandelen alleen GET requests.
+     Alleen GET requests behandelen.
   */
 
   if (request.method !== "GET") {
@@ -95,11 +207,11 @@ self.addEventListener("fetch", (event) => {
      
      NETWERK EERST
      
-     Hierdoor krijgt de gebruiker bij het openen van
-     de geïnstalleerde app altijd de nieuwste index.html.
+     Hierdoor krijgt de gebruiker bij het openen van de
+     geïnstalleerde app altijd de nieuwste index.html.
      
-     Alleen wanneer er geen internet is, gebruiken we
-     de gecachte versie.
+     Alleen wanneer er geen internet is gebruiken we
+     de laatst opgeslagen versie.
      ======================================================= */
 
   const isHtmlRequest =
@@ -120,8 +232,7 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
 
           /*
-             Nieuwe index.html onmiddellijk in de cache
-             plaatsen zodat ze ook offline beschikbaar is.
+             Alleen geldige antwoorden cachen.
           */
 
           if (
@@ -132,12 +243,19 @@ self.addEventListener("fetch", (event) => {
             const responseClone =
               response.clone();
 
+
             caches.open(CACHE_NAME)
               .then((cache) => {
-                cache.put(request, responseClone);
+
+                cache.put(
+                  request,
+                  responseClone
+                );
+
               });
 
           }
+
 
           return response;
 
@@ -147,7 +265,9 @@ self.addEventListener("fetch", (event) => {
 
           /*
              Geen internet?
-             Dan gebruiken we de laatst bekende versie.
+
+             Dan gebruiken we de laatst bekende
+             versie van de applicatie.
           */
 
           return caches.match(request)
@@ -157,13 +277,17 @@ self.addEventListener("fetch", (event) => {
                 return cached;
               }
 
-              return caches.match("./index.html");
+
+              return caches.match(
+                "./index.html"
+              );
 
             });
 
         })
 
     );
+
 
     return;
   }
@@ -180,9 +304,16 @@ self.addEventListener("fetch", (event) => {
     APP_SHELL.some((file) => {
 
       const fileUrl =
-        new URL(file, self.location.href);
+        new URL(
+          file,
+          self.location.href
+        );
 
-      return fileUrl.pathname === url.pathname;
+
+      return (
+        fileUrl.pathname ===
+        url.pathname
+      );
 
     });
 
@@ -192,13 +323,16 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
 
       caches.match(request)
+
         .then((cached) => {
 
           if (cached) {
             return cached;
           }
 
+
           return fetch(request)
+
             .then((response) => {
 
               if (
@@ -209,15 +343,19 @@ self.addEventListener("fetch", (event) => {
                 const responseClone =
                   response.clone();
 
+
                 caches.open(CACHE_NAME)
                   .then((cache) => {
+
                     cache.put(
                       request,
                       responseClone
                     );
+
                   });
 
               }
+
 
               return response;
 
@@ -226,6 +364,7 @@ self.addEventListener("fetch", (event) => {
         })
 
     );
+
 
     return;
   }
@@ -236,7 +375,9 @@ self.addEventListener("fetch", (event) => {
      
      Bijvoorbeeld CSS, JavaScript enz.
      
-     Eerst netwerk zodat updates onmiddellijk zichtbaar zijn.
+     Eerst netwerk zodat updates onmiddellijk zichtbaar
+     zijn.
+     
      Bij offline gebruik wordt de cache gebruikt.
      ======================================================= */
 
@@ -256,6 +397,7 @@ self.addEventListener("fetch", (event) => {
           const responseClone =
             response.clone();
 
+
           caches.open(CACHE_NAME)
             .then((cache) => {
 
@@ -267,6 +409,7 @@ self.addEventListener("fetch", (event) => {
             });
 
         }
+
 
         return response;
 
@@ -284,18 +427,87 @@ self.addEventListener("fetch", (event) => {
 
 
 /* =========================================================
+   KLIKKEN OP EEN PUSHMELDING
+   ========================================================= */
+
+self.addEventListener(
+  "notificationclick",
+  (event) => {
+
+    event.notification.close();
+
+
+    const targetUrl =
+      event.notification?.data?.url ||
+      "./";
+
+
+    event.waitUntil(
+
+      clients.matchAll({
+        type: "window",
+        includeUncontrolled: true
+      })
+
+        .then((clientList) => {
+
+          /*
+             Als de magazijn-app al open staat,
+             gebruiken we dat venster.
+          */
+
+          for (const client of clientList) {
+
+            if (
+              "focus" in client
+            ) {
+
+              return client.focus();
+
+            }
+
+          }
+
+
+          /*
+             Anders openen we de app.
+          */
+
+          if (
+            clients.openWindow
+          ) {
+
+            return clients.openWindow(
+              targetUrl
+            );
+
+          }
+
+        })
+
+    );
+
+  }
+);
+
+
+/* =========================================================
    BERICHTEN VAN DE APP
    ========================================================= */
 
-self.addEventListener("message", (event) => {
+self.addEventListener(
+  "message",
+  (event) => {
 
-  if (
-    event.data &&
-    event.data.type === "SKIP_WAITING"
-  ) {
+    if (
+      event.data &&
+      event.data.type ===
+      "SKIP_WAITING"
+    ) {
 
-    self.skipWaiting();
+      self.skipWaiting();
+
+    }
 
   }
-
-});
+);
