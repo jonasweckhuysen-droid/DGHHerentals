@@ -19,6 +19,7 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 
 <!-- QR-scanner -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -656,6 +657,81 @@ label {
 
 
 /* =========================================================
+   MELDINGEN
+   ========================================================= */
+
+.notification-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.notification-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: white;
+  font-size: 24px;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-content h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.notification-content p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.notification-status {
+  margin-top: 10px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  display: none;
+}
+
+.notification-status.show { display: block; }
+.notification-status.ok { background: var(--ok-bg); color: var(--ok); }
+.notification-status.error { background: var(--danger-bg); color: var(--danger); }
+.notification-status.info { background: #EEF0F6; color: var(--ink); }
+
+.notification-button {
+  width: auto !important;
+  min-width: 145px;
+  padding: 12px 14px !important;
+  font-size: 0.9rem !important;
+}
+
+@media (max-width: 480px) {
+  .notification-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .notification-content {
+    flex-basis: calc(100% - 62px);
+  }
+  .notification-button {
+    width: 100% !important;
+  }
+}
+
+
+/* =========================================================
    ADMIN: HEADER-ICOON
    ========================================================= */
 
@@ -945,6 +1021,35 @@ label {
       style="margin-bottom:16px;">
       + Nieuw artikel
     </button>
+
+    <!-- =====================================================
+         MELDINGEN
+         ===================================================== -->
+
+    <div class="card notification-card">
+
+      <div class="notification-icon">🔔</div>
+
+      <div class="notification-content">
+        <h3>Lage voorraad meldingen</h3>
+        <p id="notification-description">
+          Ontvang op deze telefoon een melding wanneer een artikel
+          de minimumvoorraad bereikt.
+        </p>
+
+        <div
+          class="notification-status"
+          id="notification-status">
+        </div>
+      </div>
+
+      <button
+        class="primary notification-button"
+        id="btn-enable-notifications">
+        Meldingen inschakelen
+      </button>
+
+    </div>
 
     <div id="item-list"></div>
 
@@ -1330,6 +1435,201 @@ const movementsRef =
 
 const variaRef =
   db.collection("varia");
+
+
+/* =========================================================
+   FIREBASE CLOUD MESSAGING
+   ========================================================= */
+
+/*
+   VUL HIER JE PUBLIEKE VAPID-KEY IN.
+
+   Firebase Console > Projectinstellingen > Cloud Messaging
+   > Web Push certificates > Generate key pair.
+
+   De VAPID-key is publiek en mag dus in deze HTML staan.
+*/
+const FCM_VAPID_KEY = "VUL_HIER_JE_VAPID_KEY_IN";
+
+let messaging = null;
+let notificationsInitialized = false;
+
+if (
+  typeof firebase.messaging === "function" &&
+  "Notification" in window
+) {
+  try {
+    messaging = firebase.messaging();
+    notificationsInitialized = true;
+  } catch (error) {
+    console.error("Firebase Messaging kon niet worden gestart:", error);
+  }
+}
+
+function setNotificationStatus(message, type = "info") {
+  const status = document.getElementById("notification-status");
+  if (!status) return;
+
+  status.textContent = message;
+  status.className = "notification-status show " + type;
+}
+
+function updateNotificationButton() {
+  const button = document.getElementById("btn-enable-notifications");
+  const description = document.getElementById("notification-description");
+  if (!button) return;
+
+  if (!("Notification" in window)) {
+    button.style.display = "none";
+    setNotificationStatus(
+      "Deze browser ondersteunt geen pushmeldingen.",
+      "error"
+    );
+    return;
+  }
+
+  if (Notification.permission === "granted") {
+    button.textContent = "✓ Meldingen actief";
+    button.classList.remove("success");
+    button.disabled = false;
+    if (description) {
+      description.textContent =
+        "Deze telefoon ontvangt meldingen wanneer een artikel de minimumvoorraad bereikt.";
+    }
+  } else if (Notification.permission === "denied") {
+    button.textContent = "Meldingen geblokkeerd";
+    button.disabled = true;
+    setNotificationStatus(
+      "Meldingen zijn door de browser geblokkeerd. Schakel meldingen voor Magazijn in via de instellingen van je browser/telefoon.",
+      "error"
+    );
+  } else {
+    button.textContent = "Meldingen inschakelen";
+    button.disabled = false;
+  }
+}
+
+async function enableNotifications() {
+  const button = document.getElementById("btn-enable-notifications");
+  if (!button) return;
+
+  if (!notificationsInitialized || !messaging) {
+    setNotificationStatus(
+      "Meldingen zijn nog niet volledig geconfigureerd. Eerst moet de VAPID-key in index.html worden ingevuld en firebase-messaging-sw.js worden toegevoegd.",
+      "error"
+    );
+    return;
+  }
+
+  if (FCM_VAPID_KEY === "VUL_HIER_JE_VAPID_KEY_IN") {
+    setNotificationStatus(
+      "De Firebase VAPID-key ontbreekt nog. Voeg deze toe in index.html bij FCM_VAPID_KEY.",
+      "error"
+    );
+    return;
+  }
+
+  if (!("Notification" in window)) {
+    setNotificationStatus(
+      "Deze browser ondersteunt geen pushmeldingen.",
+      "error"
+    );
+    return;
+  }
+
+  if (!window.isSecureContext) {
+    setNotificationStatus(
+      "Pushmeldingen werken alleen via HTTPS.",
+      "error"
+    );
+    return;
+  }
+
+  try {
+    button.disabled = true;
+    button.textContent = "Bezig...";
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      updateNotificationButton();
+      if (permission === "denied") {
+        setNotificationStatus(
+          "Meldingen zijn geweigerd. Je kunt ze later opnieuw toestaan via de browserinstellingen.",
+          "error"
+        );
+      }
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+
+    /*
+       firebase-messaging-sw.js moet in de root van de website staan.
+       De bestaande PWA-service-worker blijft verantwoordelijk voor
+       updates/offline gedrag.
+    */
+    const token = await messaging.getToken({
+      vapidKey: FCM_VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
+
+    if (!token) {
+      throw new Error("Firebase heeft geen registratie voor deze telefoon teruggegeven.");
+    }
+
+    /*
+       Elke telefoon krijgt zijn eigen document. We gebruiken een
+       SHA-256-hash als document-ID zodat de FCM-token niet in de URL
+       of documentnaam terechtkomt.
+    */
+    const hashBuffer = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(token)
+    );
+
+    const tokenId = Array.from(new Uint8Array(hashBuffer))
+      .map(byte => byte.toString(16).padStart(2, "0"))
+      .join("");
+
+    await db.collection("notificationTokens").doc(tokenId).set({
+      token,
+      platform: /iPhone|iPad|iPod/i.test(navigator.userAgent)
+        ? "ios"
+        : "android-or-other",
+      userAgent: navigator.userAgent,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      enabled: true
+    }, { merge: true });
+
+    updateNotificationButton();
+    setNotificationStatus(
+      "Deze telefoon is geregistreerd. Je ontvangt voortaan meldingen wanneer een artikel een lage voorraad bereikt.",
+      "ok"
+    );
+
+  } catch (error) {
+    console.error("Fout bij inschakelen van meldingen:", error);
+    button.disabled = false;
+    button.textContent = "Meldingen inschakelen";
+
+    setNotificationStatus(
+      "Meldingen konden niet worden ingeschakeld: " +
+      (error && error.message ? error.message : "onbekende fout"),
+      "error"
+    );
+  }
+}
+
+/* Voorbereiden zodra de pagina geladen is. */
+window.addEventListener("load", () => {
+  updateNotificationButton();
+
+  const button = document.getElementById("btn-enable-notifications");
+  if (button) {
+    button.addEventListener("click", enableNotifications);
+  }
+});
 
 
 /* =========================================================
