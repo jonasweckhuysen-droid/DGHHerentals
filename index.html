@@ -1559,6 +1559,98 @@ const FCM_VAPID_KEY =
 
 let messaging = null;
 let notificationsInitialized = false;
+  /* =========================================================
+   FCM MELDINGEN OP DE VOORGROND
+   ========================================================= */
+
+if (
+  typeof firebase.messaging === "function"
+) {
+
+  try {
+
+    const foregroundMessaging =
+      firebase.messaging();
+
+    foregroundMessaging.onMessage(
+      async (payload) => {
+
+        console.log(
+          "[Magazijn] Voorgrondmelding ontvangen:",
+          payload
+        );
+
+        const title =
+          payload.data?.title ||
+          payload.notification?.title ||
+          "🔔 Lage voorraad";
+
+        const body =
+          payload.data?.body ||
+          payload.notification?.body ||
+          "Er is een wijziging in het magazijn.";
+
+        const tag =
+          payload.data?.tag ||
+          "magazijn-melding";
+
+        const url =
+          payload.data?.url ||
+          "./";
+
+
+        try {
+
+          const registration =
+            await navigator.serviceWorker.ready;
+
+          await registration.showNotification(
+            title,
+            {
+              body: body,
+
+              icon:
+                "./icon-192.png",
+
+              badge:
+                "./icon-192.png",
+
+              tag: tag,
+
+              renotify: true,
+
+              data: {
+                url: url
+              }
+            }
+          );
+
+          console.log(
+            "[Magazijn] Voorgrondmelding getoond."
+          );
+
+        } catch (error) {
+
+          console.error(
+            "[Magazijn] Voorgrondmelding kon niet worden getoond:",
+            error
+          );
+
+        }
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "[Magazijn] onMessage kon niet worden ingesteld:",
+      error
+    );
+
+  }
+
+}
 
 
 if (
