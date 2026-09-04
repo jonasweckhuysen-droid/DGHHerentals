@@ -169,6 +169,7 @@ button.secondary {
 
 input[type="text"],
 input[type="number"],
+input[type="password"],
 textarea {
   width: 100%;
   padding: 13px;
@@ -1142,7 +1143,8 @@ label {
 
       <textarea
         id="varia-text"
-        placeholder="Bv. 2 dozen steriele handschoenen maat L&#10;Bv. Speciale verbandsets voor ambulance 3">
+        placeholder="Bv. 2 dozen steriele handschoenen maat L
+Bv. Speciale verbandsets voor ambulance 3">
       </textarea>
 
       <button
@@ -1719,8 +1721,6 @@ async function enableNotifications() {
 
   }
 
-  }
-
 
   if (!("Notification" in window)) {
 
@@ -1783,16 +1783,6 @@ async function enableNotifications() {
     }
 
 
-    /*
-       Gebruik de reeds geregistreerde
-       service worker van de PWA.
-
-       Deze ene sw.js verzorgt zowel:
-       - PWA/offline werking
-       - automatische updates
-       - Firebase pushmeldingen
-    */
-
     const registration =
       await navigator.serviceWorker.ready;
 
@@ -1817,14 +1807,6 @@ async function enableNotifications() {
 
     }
 
-
-    /*
-       Elke telefoon krijgt zijn eigen document.
-
-       We gebruiken een SHA-256-hash als
-       document-ID zodat de FCM-token niet
-       rechtstreeks als document-ID wordt gebruikt.
-    */
 
     const hashBuffer =
       await crypto.subtle.digest(
@@ -1945,13 +1927,6 @@ window.addEventListener(
 
 /* =========================================================
    SERVICE WORKER
-   =========================================================
-
-   sw.js verzorgt:
-   - PWA/offline cache
-   - Firebase Cloud Messaging
-   - automatische updates
-   - onmiddellijk activeren van nieuwe versies
    ========================================================= */
 
 if (
@@ -1972,11 +1947,6 @@ if (
             }
           );
 
-
-        /*
-           Controleer meteen of er een nieuwe
-           service worker beschikbaar is.
-        */
 
         await registration.update();
 
@@ -1999,14 +1969,6 @@ if (
     }
   );
 
-
-  /*
-     De nieuwe service worker gebruikt
-     skipWaiting() en clients.claim().
-
-     Zodra hij de controle overneemt,
-     laden we de pagina opnieuw.
-  */
 
   let refreshing = false;
 
@@ -2089,14 +2051,19 @@ document
           );
 
 
-          document
-            .getElementById(
+          const view =
+            document.getElementById(
               "view-" +
               btn.dataset.view
-            )
-            .classList.add(
+            );
+
+          if (view) {
+
+            view.classList.add(
               "active"
             );
+
+          }
 
         }
       );
@@ -2167,32 +2134,42 @@ function updateAdminUI() {
     );
 
 
-  document
-    .getElementById(
+  const adminDot =
+    document.getElementById(
       "admin-dot"
-    )
-    .classList.toggle(
+    );
+
+  if (adminDot) {
+
+    adminDot.classList.toggle(
       "show",
       isAdmin
     );
 
+  }
+
+
+  const logboekView =
+    document.getElementById(
+      "view-logboek"
+    );
 
   if (
     !isAdmin &&
-    document
-      .getElementById(
-        "view-logboek"
-      )
-      .classList.contains(
-        "active"
-      )
+    logboekView &&
+    logboekView.classList.contains(
+      "active"
+    )
   ) {
 
-    document
-      .querySelector(
+    const scanTab =
+      document.querySelector(
         '.tab-btn[data-view="scan"]'
-      )
-      .click();
+      );
+
+    if (scanTab) {
+      scanTab.click();
+    }
 
   }
 
@@ -2488,9 +2465,15 @@ document
         () => {}
 
       )
-
       .catch(
-        () => {
+        error => {
+
+          console.error(
+            "Scanner fout:",
+            error
+          );
+
+          scanner = null;
 
           showToast(
             "Kan camera niet starten. Controleer toestemming.",
@@ -2521,24 +2504,76 @@ async function onScanSuccess(
   } catch (e) {}
 
 
-  const snap =
-    await itemsRef
-      .where(
-        "qrCode",
-        "==",
-        decodedText
-      )
-      .limit(1)
-      .get();
+  try {
+
+    const snap =
+      await itemsRef
+        .where(
+          "qrCode",
+          "==",
+          decodedText
+        )
+        .limit(1)
+        .get();
 
 
-  if (snap.empty) {
+    if (snap.empty) {
 
-    showToast(
-      "Geen artikel gevonden voor deze code.",
-      "error"
+      showToast(
+        "Geen artikel gevonden voor deze code.",
+        "error"
+      );
+
+
+      try {
+
+        await scanner.resume();
+
+      } catch (e) {}
+
+
+      return;
+
+    }
+
+
+    const d =
+      snap.docs[0];
+
+
+    selectItem({
+
+      id:
+        d.id,
+
+      ...d.data()
+
+    });
+
+
+    try {
+
+      await scanner.stop();
+
+      scanner.clear();
+
+    } catch (e) {}
+
+
+    scanner =
+      null;
+
+  } catch (error) {
+
+    console.error(
+      "QR zoekfout:",
+      error
     );
 
+    showToast(
+      "Fout bij zoeken van het artikel.",
+      "error"
+    );
 
     try {
 
@@ -2546,37 +2581,7 @@ async function onScanSuccess(
 
     } catch (e) {}
 
-
-    return;
-
   }
-
-
-  const d =
-    snap.docs[0];
-
-
-  selectItem({
-
-    id:
-      d.id,
-
-    ...d.data()
-
-  });
-
-
-  try {
-
-    await scanner.stop();
-
-    scanner.clear();
-
-  } catch (e) {}
-
-
-  scanner =
-    null;
 
 }
 
@@ -2813,6 +2818,18 @@ document
     "click",
     async () => {
 
+      if (!isAdmin) {
+
+        showToast(
+          "Alleen een admin kan voorraad bijboeken.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
       const amount =
         parseInt(
           document.getElementById(
@@ -3016,8 +3033,10 @@ itemsRef.onSnapshot(
         }
 
 
-        return a.name.localeCompare(
-          b.name
+        return (
+          a.name || ""
+        ).localeCompare(
+          b.name || ""
         );
 
       }
@@ -3288,6 +3307,7 @@ document.addEventListener(
 
 
     if (
+      wrap &&
       !wrap.contains(
         event.target
       )
@@ -3506,8 +3526,8 @@ function renderTellingList(
   const sorted =
     [...items].sort(
       (a, b) =>
-        a.name.localeCompare(
-          b.name
+        (a.name || "").localeCompare(
+          b.name || ""
         )
     );
 
@@ -3632,6 +3652,18 @@ document
   .addEventListener(
     "click",
     async () => {
+
+      if (!isAdmin) {
+
+        showToast(
+          "Alleen een admin kan een telling opslaan.",
+          "error"
+        );
+
+        return;
+
+      }
+
 
       const inputs =
         Array.from(
@@ -3818,10 +3850,24 @@ document
   )
   .addEventListener(
     "click",
-    () =>
+    () => {
+
+      if (!isAdmin) {
+
+        showToast(
+          "Alleen een admin kan artikelen toevoegen.",
+          "error"
+        );
+
+        return;
+
+      }
+
       openItemModal(
         null
-      )
+      );
+
+    }
   );
 
 
@@ -3838,6 +3884,18 @@ document
 function openItemModal(
   item
 ) {
+
+  if (!isAdmin) {
+
+    showToast(
+      "Alleen een admin kan artikelen bewerken.",
+      "error"
+    );
+
+    return;
+
+  }
+
 
   editingItemId =
     item
@@ -3967,6 +4025,18 @@ document
   .addEventListener(
     "click",
     async () => {
+
+      if (!isAdmin) {
+
+        showToast(
+          "Alleen een admin kan artikelen bewaren.",
+          "error"
+        );
+
+        return;
+
+      }
+
 
       const name =
         document
@@ -4242,6 +4312,9 @@ variaRef
               )}
             </div>
 
+            ${
+              isAdmin
+                ? `
             <button
               class="varia-delete"
               data-id="${escapeHtml(doc.id)}">
@@ -4249,21 +4322,30 @@ variaRef
               Verwijderen
 
             </button>
+            `
+                : ""
+            }
 
           `;
 
 
-          item
-            .querySelector(
+          const deleteButton =
+            item.querySelector(
               ".varia-delete"
-            )
-            .addEventListener(
+            );
+
+
+          if (deleteButton) {
+
+            deleteButton.addEventListener(
               "click",
               () =>
                 deleteVaria(
                   doc.id
                 )
             );
+
+          }
 
 
           list.appendChild(
@@ -4350,6 +4432,9 @@ function loadVariaWithoutOrdering() {
                 )}
               </div>
 
+              ${
+                isAdmin
+                  ? `
               <button
                 class="varia-delete"
                 data-id="${escapeHtml(doc.id)}">
@@ -4357,21 +4442,30 @@ function loadVariaWithoutOrdering() {
                 Verwijderen
 
               </button>
+              `
+                  : ""
+              }
 
             `;
 
 
-            item
-              .querySelector(
+            const deleteButton =
+              item.querySelector(
                 ".varia-delete"
-              )
-              .addEventListener(
+              );
+
+
+            if (deleteButton) {
+
+              deleteButton.addEventListener(
                 "click",
                 () =>
                   deleteVaria(
                     doc.id
                   )
               );
+
+            }
 
 
             list.appendChild(
@@ -4403,6 +4497,18 @@ function loadVariaWithoutOrdering() {
 async function deleteVaria(
   id
 ) {
+
+  if (!isAdmin) {
+
+    showToast(
+      "Alleen een admin kan varia verwijderen.",
+      "error"
+    );
+
+    return;
+
+  }
+
 
   const confirmed =
     confirm(
@@ -4604,6 +4710,7 @@ movementsRef
                 </span>
 
               </div>
+
 
               <div class="log-meta">
 
